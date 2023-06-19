@@ -670,9 +670,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.id.feedback -> {
                 Utils.openUri(this, AppConfig.v2rayNGIssues)
             }
-            R.id.promotion -> {
-                Utils.openUri(this, "${Utils.decode(AppConfig.promotionUrl)}?t=${System.currentTimeMillis()}")
-            }
             R.id.logcat -> {
                 startActivity(Intent(this, LogcatActivity::class.java))
             }

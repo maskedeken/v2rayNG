@@ -117,6 +117,23 @@
                 android:entries="@array/ss_securitys" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_margin_top_height"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ReducedIvHeadEntropy" />
+
+            <Spinner
+                android:id="@+id/sp_reduced_iv_head_entropy"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edit_height"
+                android:entries="@array/reduced_iv_head_entropy" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

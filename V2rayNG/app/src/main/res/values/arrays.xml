@@ -177,4 +177,9 @@
         <item>ru</item>
         <item>fa</item>
     </string-array>
+
+    <string-array name="reduced_iv_head_entropy" translatable="false">
+        <item>false</item>
+        <item>true</item>
+    </string-array>
 </resources>

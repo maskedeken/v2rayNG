@@ -101,13 +101,14 @@ data class V2rayConfig(
 
             data class ServersBean(var address: String = "",
                                    var method: String = "chacha20-poly1305",
-                                   var ota: Boolean = false,
+                                   var ota: Boolean? = null,
                                    var password: String = "",
                                    var port: Int = DEFAULT_PORT,
                                    var level: Int = DEFAULT_LEVEL,
                                    val email: String? = null,
                                    var flow: String? = null,
                                    val ivCheck: Boolean? = null,
+                                   var reducedIvHeadEntropy: Boolean? = null,
                                    var users: List<SocksUsersBean>? = null) {
 
 

@@ -72,6 +72,9 @@ class ServerActivity : BaseActivity() {
     private val alpns: Array<out String> by lazy {
         resources.getStringArray(R.array.streamsecurity_alpn)
     }
+    private val reducedIvHeadEntropys: Array<out String> by lazy {
+        resources.getStringArray(R.array.reduced_iv_head_entropy)
+    }
     // Kotlin synthetics was used, but since it is removed in 1.8. We switch to old manual approach.
     // We don't use AndroidViewBinding because, it is better to share similar logics for different
     // protocols. Use findViewById manually ensures the xml are de-coupled with the activity logic.
@@ -103,6 +106,7 @@ class ServerActivity : BaseActivity() {
     private val container_short_id: LinearLayout? by lazy { findViewById(R.id.l7) }
     private val et_spider_x: EditText? by lazy { findViewById(R.id.et_spider_x) }
     private val container_spider_x: LinearLayout? by lazy { findViewById(R.id.l8) }
+    private val sp_reduced_iv_head_entropy: Spinner? by lazy { findViewById(R.id.sp_reduced_iv_head_entropy) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -190,7 +194,12 @@ class ServerActivity : BaseActivity() {
         et_port.text = Utils.getEditable(outbound.getServerPort()?.toString() ?: DEFAULT_PORT.toString())
         et_id.text = Utils.getEditable(outbound.getPassword().orEmpty())
         et_alterId?.text = Utils.getEditable(outbound.settings?.vnext?.get(0)?.users?.get(0)?.alterId.toString())
-        if (config.configType == EConfigType.SOCKS) {
+        if (config.configType == EConfigType.SHADOWSOCKS) {
+            val reducedIvHeadEntropy = Utils.arrayFind(reducedIvHeadEntropys, outbound.settings?.servers?.get(0)?.reducedIvHeadEntropy.toString())
+            if (reducedIvHeadEntropy >= 0) {
+                sp_reduced_iv_head_entropy?.setSelection(reducedIvHeadEntropy)
+            }
+        } else if (config.configType == EConfigType.SOCKS) {
             et_security?.text = Utils.getEditable(outbound.settings?.servers?.get(0)?.users?.get(0)?.user.orEmpty())
         } else if (config.configType == EConfigType.VLESS) {
             et_security?.text = Utils.getEditable(outbound.getSecurityEncryption().orEmpty())
@@ -283,6 +292,7 @@ class ServerActivity : BaseActivity() {
 
         //et_security.text = null
         sp_flow?.setSelection(0)
+        sp_reduced_iv_head_entropy?.setSelection(0)
         return true
     }
 
@@ -361,6 +371,7 @@ class ServerActivity : BaseActivity() {
         if (config.configType == EConfigType.SHADOWSOCKS) {
             server.password = et_id.text.toString().trim()
             server.method = shadowsocksSecuritys[sp_security?.selectedItemPosition ?: 0]
+            server.reducedIvHeadEntropy = reducedIvHeadEntropys[sp_reduced_iv_head_entropy?.selectedItemPosition ?: 0].toBoolean()
         } else if (config.configType == EConfigType.SOCKS) {
             if (TextUtils.isEmpty(et_security?.text) && TextUtils.isEmpty(et_id.text)) {
                 server.users = null
