@@ -182,4 +182,14 @@
         <item>false</item>
         <item>true</item>
     </string-array>
+
+    <string-array name="tun_implementation" translatable="false">
+        <item>gVisor</item>
+        <item>System</item>
+    </string-array>
+
+    <string-array name="int_array_2">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
 </resources>

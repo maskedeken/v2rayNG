@@ -11,6 +11,8 @@ import com.v2ray.ang.util.Utils
 import java.lang.ref.SoftReference
 
 class V2RayProxyOnlyService : Service(), ServiceControl {
+
+    private var isRunning = false
     override fun onCreate() {
         super.onCreate()
         V2RayServiceManager.serviceControl = SoftReference(this)
@@ -18,12 +20,14 @@ class V2RayProxyOnlyService : Service(), ServiceControl {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         V2RayServiceManager.startV2rayPoint()
+        isRunning = true
         return START_STICKY
     }
 
     override fun onDestroy() {
         super.onDestroy()
         V2RayServiceManager.stopV2rayPoint()
+        isRunning = false
     }
 
     override fun getService(): Service {
@@ -40,6 +44,10 @@ class V2RayProxyOnlyService : Service(), ServiceControl {
 
     override fun vpnProtect(socket: Int): Boolean {
         return true
+    }
+
+    override fun isRunning(): Boolean {
+        return isRunning
     }
 
     override fun onBind(intent: Intent?): IBinder? {

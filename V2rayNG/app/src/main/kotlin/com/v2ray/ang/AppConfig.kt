@@ -24,6 +24,7 @@ object AppConfig {
     const val PREF_REMOTE_DNS = "pref_remote_dns"
     const val PREF_DOMESTIC_DNS = "pref_domestic_dns"
     const val PREF_LOCAL_DNS_PORT = "pref_local_dns_port"
+    const val PREF_TUN_IMPLEMENTATION = "pref_tun_implementation"
     const val PREF_ALLOW_INSECURE = "pref_allow_insecure"
     const val PREF_SOCKS_PORT = "pref_socks_port"
     const val PREF_HTTP_PORT = "pref_http_port"
@@ -40,6 +41,8 @@ object AppConfig {
     const val PREF_BYPASS_APPS = "pref_bypass_apps"
     const val PREF_CONFIRM_REMOVE = "pref_confirm_remove"
     const val PREF_START_SCAN_IMMEDIATE = "pref_start_scan_immediate"
+    const val PREF_MUX_ENABLED = "pref_mux_enabled"
+    const val PREF_MUX_CONCURRENCY = "pref_mux_concurrency"
 
     const val HTTP_PROTOCOL: String = "http://"
     const val HTTPS_PROTOCOL: String = "https://"
@@ -87,4 +90,7 @@ object AppConfig {
     const val MSG_MEASURE_CONFIG = 7
     const val MSG_MEASURE_CONFIG_SUCCESS = 71
     const val MSG_MEASURE_CONFIG_CANCEL = 72
+
+    const val TUN_IMPLEMENTATION = "1"
+    const val MUX_CONCURRENCY = "8"
 }

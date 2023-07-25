@@ -35,13 +35,16 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             AppConfig.PREF_HTTP_PORT,
             AppConfig.PREF_LOGLEVEL,
             AppConfig.PREF_LANGUAGE,
+            AppConfig.PREF_TUN_IMPLEMENTATION,
             AppConfig.PREF_ROUTING_DOMAIN_STRATEGY,
             AppConfig.PREF_ROUTING_MODE,
             AppConfig.PREF_V2RAY_ROUTING_AGENT,
             AppConfig.PREF_V2RAY_ROUTING_BLOCKED,
-            AppConfig.PREF_V2RAY_ROUTING_DIRECT, -> {
+            AppConfig.PREF_V2RAY_ROUTING_DIRECT,
+            AppConfig.PREF_MUX_CONCURRENCY, -> {
                 settingsStorage?.encode(key, sharedPreferences.getString(key, ""))
             }
+            AppConfig.PREF_MUX_ENABLED,
             AppConfig.PREF_SPEED_ENABLED,
             AppConfig.PREF_PROXY_SHARING,
             AppConfig.PREF_LOCAL_DNS_ENABLED,

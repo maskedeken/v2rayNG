@@ -64,6 +64,7 @@ object V2rayConfigUtil {
 
         inbounds(v2rayConfig)
 
+        muxObject(outbound)
         httpRequestObject(outbound)
 
         v2rayConfig.outbounds[0] = outbound
@@ -130,7 +131,7 @@ object V2rayConfigUtil {
 
     private fun fakedns(v2rayConfig: V2rayConfig) {
         if (settingsStorage?.decodeBool(AppConfig.PREF_FAKE_DNS_ENABLED) == true) {
-            v2rayConfig.fakedns = listOf(V2rayConfig.FakednsBean())
+            v2rayConfig.fakedns = listOf(V2rayConfig.FakednsBean(ipPool = "198.18.0.0/15"), V2rayConfig.FakednsBean(ipPool = "fc00::/18"))
             v2rayConfig.outbounds.filter { it.protocol == "freedom" }.forEach {
                 it.settings?.domainStrategy = "UseIP"
             }
@@ -309,7 +310,9 @@ object V2rayConfigUtil {
                         V2rayConfig.OutboundBean(
                                 protocol = "dns",
                                 tag = "dns-out",
-                                settings = null,
+                                settings = V2rayConfig.OutboundBean.OutSettingsBean(
+                                    nonIPQuery = "skip"
+                                ),
                                 streamSettings = null,
                                 mux = null))
             }
@@ -340,7 +343,7 @@ object V2rayConfigUtil {
                 servers.add(it)
             }
             if (proxyDomain.size > 0) {
-                servers.add(V2rayConfig.DnsBean.ServersBean(remoteDns.first(), 53, proxyDomain, null))
+                servers.add(V2rayConfig.DnsBean.ServersBean(remoteDns.first(), 53, proxyDomain, null, true))
             }
 
             // domestic DNS
@@ -352,10 +355,10 @@ object V2rayConfigUtil {
                 val geositeCn = arrayListOf("geosite:cn")
                 val geoipCn = arrayListOf("geoip:cn")
                 if (directDomain.size > 0) {
-                    servers.add(V2rayConfig.DnsBean.ServersBean(domesticDns.first(), 53, directDomain, geoipCn))
+                    servers.add(V2rayConfig.DnsBean.ServersBean(domesticDns.first(), 53, directDomain, geoipCn, true))
                 }
                 if (routingMode == ERoutingMode.BYPASS_MAINLAND.value || routingMode == ERoutingMode.BYPASS_LAN_MAINLAND.value) {
-                    servers.add(V2rayConfig.DnsBean.ServersBean(domesticDns.first(), 53, geositeCn, geoipCn))
+                    servers.add(V2rayConfig.DnsBean.ServersBean(domesticDns.first(), 53, geositeCn, geoipCn, true))
                 }
                 if (Utils.isPureIpAddress(domesticDns.first())) {
                     v2rayConfig.routing.rules.add(0, V2rayConfig.RoutingBean.RulesBean(
@@ -380,7 +383,8 @@ object V2rayConfigUtil {
             // DNS dns对象
             v2rayConfig.dns = V2rayConfig.DnsBean(
                     servers = servers,
-                    hosts = hosts)
+                    hosts = hosts,
+                    disableFallbackIfMatch = true)
 
             // DNS routing
             if (Utils.isPureIpAddress(remoteDns.first())) {
@@ -397,6 +401,16 @@ object V2rayConfigUtil {
             return false
         }
         return true
+    }
+
+    private fun muxObject(outbound: V2rayConfig.OutboundBean) {
+        val muxEnabled = settingsStorage?.decodeBool(AppConfig.PREF_MUX_ENABLED, false) ?: false
+        val muxConcurrency = Utils.parseInt(settingsStorage?.decodeString(AppConfig.PREF_MUX_CONCURRENCY, AppConfig.MUX_CONCURRENCY) ?: AppConfig.MUX_CONCURRENCY)
+        if (muxEnabled) {
+            outbound.mux = V2rayConfig.OutboundBean.MuxBean(enabled = true, concurrency = muxConcurrency)
+        } else {
+            outbound.mux = null
+        }
     }
 
     private fun httpRequestObject(outbound: V2rayConfig.OutboundBean): Boolean {

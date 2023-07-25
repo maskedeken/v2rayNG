@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 import libv2ray.Libv2ray
 import libv2ray.V2RayPoint
 import libv2ray.V2RayVPNServiceSupportsSet
+import libv2ray.UnderlyingResolver
 import rx.Observable
 import rx.Subscription
 import java.lang.ref.SoftReference
@@ -41,7 +42,7 @@ object V2RayServiceManager {
     private const val NOTIFICATION_PENDING_INTENT_STOP_V2RAY = 1
     private const val NOTIFICATION_ICON_THRESHOLD = 3000
 
-    val v2rayPoint: V2RayPoint = Libv2ray.newV2RayPoint(V2RayCallback(), Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1)
+    val v2rayPoint: V2RayPoint = Libv2ray.newV2RayPoint(V2RayCallback())
     private val mMsgReceive = ReceiveMessageHandler()
     private val mainStorage by lazy { MMKV.mmkvWithID(MmkvManager.ID_MAIN, MMKV.MULTI_PROCESS_MODE) }
     private val settingsStorage by lazy { MMKV.mmkvWithID(MmkvManager.ID_SETTING, MMKV.MULTI_PROCESS_MODE) }
@@ -116,6 +117,14 @@ object V2RayServiceManager {
                 Log.d(ANG_PACKAGE, e.toString())
                 -1
             }
+        }
+
+        override fun getResolver(): UnderlyingResolver? {
+            val serviceControl = serviceControl?.get() ?: return null
+            if (serviceControl is UnderlyingResolver && serviceControl.isRunning()) {
+                return serviceControl
+            }
+            return null
         }
     }
 

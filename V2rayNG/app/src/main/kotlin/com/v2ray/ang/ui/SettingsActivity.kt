@@ -31,6 +31,7 @@ class SettingsActivity : BaseActivity() {
         private val fakeDns by lazy { findPreference<CheckBoxPreference>(AppConfig.PREF_FAKE_DNS_ENABLED) }
         private val localDnsPort by lazy { findPreference<EditTextPreference>(AppConfig.PREF_LOCAL_DNS_PORT) }
         private val vpnDns by lazy { findPreference<EditTextPreference>(AppConfig.PREF_VPN_DNS) }
+        private val tunImplementation by lazy { findPreference<ListPreference>(AppConfig.PREF_TUN_IMPLEMENTATION) }
         //        val autoRestart by lazy { findPreference(PREF_AUTO_RESTART) as CheckBoxPreference }
         private val remoteDns by lazy { findPreference<EditTextPreference>(AppConfig.PREF_REMOTE_DNS) }
         private val domesticDns by lazy { findPreference<EditTextPreference>(AppConfig.PREF_DOMESTIC_DNS) }
@@ -42,6 +43,8 @@ class SettingsActivity : BaseActivity() {
 //        val tgGroup: Preference by lazy { findPreference(PREF_TG_GROUP) }
 
         private val mode by lazy { findPreference<ListPreference>(AppConfig.PREF_MODE) }
+        private val muxEnabled by lazy { findPreference<CheckBoxPreference>(AppConfig.PREF_MUX_ENABLED) }
+        private val muxConcurrency by lazy { findPreference<EditTextPreference>(AppConfig.PREF_MUX_CONCURRENCY) }
 
         override fun onCreatePreferences(bundle: Bundle?, s: String?) {
             addPreferencesFromResource(R.xml.pref_settings)
@@ -121,6 +124,16 @@ class SettingsActivity : BaseActivity() {
             }
             mode?.dialogLayoutResource = R.layout.preference_with_help_link
             //loglevel.summary = "LogLevel"
+
+            muxEnabled?.setOnPreferenceChangeListener { _, any ->
+                updateMuxEnabled(any as Boolean)
+                true
+            }
+            muxConcurrency?.setOnPreferenceChangeListener { _, any ->
+                val nval = any as String
+                muxConcurrency?.summary = if (TextUtils.isEmpty(nval)) AppConfig.MUX_CONCURRENCY else nval
+                true
+            }
         }
 
         override fun onStart() {
@@ -133,6 +146,9 @@ class SettingsActivity : BaseActivity() {
             localDnsPort?.summary = defaultSharedPreferences.getString(AppConfig.PREF_LOCAL_DNS_PORT, AppConfig.PORT_LOCAL_DNS)
             socksPort?.summary = defaultSharedPreferences.getString(AppConfig.PREF_SOCKS_PORT, AppConfig.PORT_SOCKS)
             httpPort?.summary = defaultSharedPreferences.getString(AppConfig.PREF_HTTP_PORT, AppConfig.PORT_HTTP)
+
+            updateMuxEnabled(defaultSharedPreferences.getBoolean(AppConfig.PREF_MUX_ENABLED, false))
+            muxConcurrency?.summary = defaultSharedPreferences.getString(AppConfig.PREF_MUX_CONCURRENCY, AppConfig.MUX_CONCURRENCY)
 
             if (TextUtils.isEmpty(remoteDnsString)) {
                 remoteDnsString = AppConfig.DNS_AGENT
@@ -152,6 +168,9 @@ class SettingsActivity : BaseActivity() {
             if (TextUtils.isEmpty(httpPort?.summary)) {
                 httpPort?.summary = AppConfig.PORT_HTTP
             }
+            if (TextUtils.isEmpty(muxConcurrency?.summary)) {
+                muxConcurrency?.summary = AppConfig.MUX_CONCURRENCY
+            }
         }
 
         private fun updateMode(mode: String?) {
@@ -164,6 +183,7 @@ class SettingsActivity : BaseActivity() {
             fakeDns?.isEnabled = vpn
             localDnsPort?.isEnabled = vpn
             vpnDns?.isEnabled = vpn
+            tunImplementation?.isEnabled = vpn
             if (vpn) {
                 updateLocalDns(defaultSharedPreferences.getBoolean(AppConfig.PREF_LOCAL_DNS_ENABLED, false))
             }
@@ -173,6 +193,10 @@ class SettingsActivity : BaseActivity() {
             fakeDns?.isEnabled = enabled
             localDnsPort?.isEnabled = enabled
             vpnDns?.isEnabled = !enabled
+        }
+
+        private fun updateMuxEnabled(enabled: Boolean) {
+            muxConcurrency?.isEnabled = enabled
         }
     }
 

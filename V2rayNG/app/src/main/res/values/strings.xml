@@ -104,6 +104,7 @@
 
     <string name="title_pref_mux_enabled">Enable Mux</string>
     <string name="summary_pref_mux_enabled">Enable maybe speed up network and switch network maybe flash</string>
+    <string name="mux_concurrency" translatable="false">Mux Concurrent Connections</string>
 
     <string name="title_pref_speed_enabled">Enable speed display</string>
     <string name="summary_pref_speed_enabled">Display current speed in the notification.\nNotification icon would change based on
@@ -214,6 +215,8 @@
 
     <string name="import_subscription_success">Subscription imported Successfully</string>
     <string name="import_subscription_failure">Import subscription failed</string>
+
+    <string name="tun_implementation">TUN Implementation</string>
 
     <string-array name="share_method">
         <item>QRcode</item>

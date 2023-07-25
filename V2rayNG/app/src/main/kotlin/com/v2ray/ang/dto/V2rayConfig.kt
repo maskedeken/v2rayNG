@@ -66,7 +66,7 @@ data class V2rayConfig(
                             var streamSettings: StreamSettingsBean? = null,
                             val proxySettings: Any? = null,
                             val sendThrough: String? = null,
-                            val mux: MuxBean? = MuxBean(false)) {
+                            var mux: MuxBean? = null) {
 
         data class OutSettingsBean(var vnext: List<VnextBean>? = null,
                                    var servers: List<ServersBean>? = null,
@@ -76,6 +76,7 @@ data class V2rayConfig(
                                    val network: String? = null,
                                    val address: Any? = null,
                                    val port: Int? = null,
+                                   val nonIPQuery: String? = null,
                 /*Freedom*/
                                    var domainStrategy: String? = null,
                                    val redirect: String? = null,
@@ -401,12 +402,15 @@ data class V2rayConfig(
                        val clientIp: String? = null,
                        val disableCache: Boolean? = null,
                        val queryStrategy: String? = null,
+                       val disableFallback: Boolean? = null,
+                       val disableFallbackIfMatch: Boolean? = null,
                        val tag: String? = null
     ) {
         data class ServersBean(var address: String = "",
                                var port: Int? = null,
                                var domains: List<String>? = null,
                                var expectIPs: List<String>? = null,
+                               val skipFallback: Boolean? = null,
                                val clientIp: String? = null)
     }
 
@@ -444,7 +448,7 @@ data class V2rayConfig(
                 var bufferSize: Int? = null)
     }
 
-    data class FakednsBean(var ipPool: String = "198.18.0.0/15",
+    data class FakednsBean(var ipPool: String,
                            var poolSize: Int = 10000) // roughly 10 times smaller than total ip pool
 
     fun getProxyOutbound(): OutboundBean? {
@@ -460,7 +464,7 @@ data class V2rayConfig(
 
     fun toPrettyPrinting(): String {
         return GsonBuilder()
-                .setPrettyPrinting()
+        cd ..        .setPrettyPrinting()
                 .disableHtmlEscaping()
                 .registerTypeAdapter( // custom serialiser is needed here since JSON by default parse number as Double, core will fail to start
                         object : TypeToken<Double>() {}.type,

@@ -79,15 +79,18 @@ object AngConfigManager {
             AppConfig.PREF_SOCKS_PORT,
             AppConfig.PREF_HTTP_PORT,
             AppConfig.PREF_LOGLEVEL,
+            AppConfig.PREF_TUN_IMPLEMENTATION,
             AppConfig.PREF_ROUTING_DOMAIN_STRATEGY,
             AppConfig.PREF_ROUTING_MODE,
             AppConfig.PREF_V2RAY_ROUTING_AGENT,
             AppConfig.PREF_V2RAY_ROUTING_BLOCKED,
             AppConfig.PREF_V2RAY_ROUTING_DIRECT,
+            AppConfig.PREF_MUX_CONCURRENCY,
         ).forEach { key ->
             settingsStorage?.encode(key, sharedPreferences.getString(key, null))
         }
         listOf(
+            AppConfig.PREF_MUX_ENABLED,
             AppConfig.PREF_SPEED_ENABLED,
             AppConfig.PREF_PROXY_SHARING,
             AppConfig.PREF_LOCAL_DNS_ENABLED,

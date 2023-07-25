@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.*
 import android.os.Build
+import android.os.CancellationSignal
 import android.os.ParcelFileDescriptor
 import android.os.StrictMode
 import android.util.Log
@@ -18,19 +19,24 @@ import com.v2ray.ang.util.MmkvManager
 import com.v2ray.ang.util.MyContextWrapper
 import com.v2ray.ang.util.Utils
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.io.File
+import kotlinx.coroutines.asExecutor
+import kotlinx.coroutines.runBlocking
 import java.lang.ref.SoftReference
 
-class V2RayVpnService : VpnService(), ServiceControl {
+import libv2ray.Libv2ray
+import libv2ray.TunConfig
+import libv2ray.V2Tun
+import libv2ray.UnderlyingResolver
+import java.net.InetAddress
+import kotlin.coroutines.suspendCoroutine
+
+class V2RayVpnService : VpnService(), ServiceControl, UnderlyingResolver {
     companion object {
-        private const val VPN_MTU = 1500
+        private const val VPN_MTU = 9000
         private const val PRIVATE_VLAN4_CLIENT = "26.26.26.1"
         private const val PRIVATE_VLAN4_ROUTER = "26.26.26.2"
         private const val PRIVATE_VLAN6_CLIENT = "da26:2626::1"
         private const val PRIVATE_VLAN6_ROUTER = "da26:2626::2"
-        private const val TUN2SOCKS = "libtun2socks.so"
     }
 
     private val settingsStorage by lazy { MMKV.mmkvWithID(MmkvManager.ID_SETTING, MMKV.MULTI_PROCESS_MODE) }
@@ -39,7 +45,10 @@ class V2RayVpnService : VpnService(), ServiceControl {
     private var isRunning = false
 
     //val fd: Int get() = mInterface.fd
-    private lateinit var process: Process
+    private lateinit var v2Tun: V2Tun
+
+    @Volatile
+    private var underlyingNetwork: Network? = null
 
     /**destroy
      * Unfortunately registerDefaultNetworkCallback is going to return our VPN interface: https://android.googlesource.com/platform/frameworks/base/+/dda156ab0c5d66ad82bdcf76cda07cbc0a9c8a2e
@@ -64,15 +73,18 @@ class V2RayVpnService : VpnService(), ServiceControl {
     private val defaultNetworkCallback by lazy {
         object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
+                underlyingNetwork = network
                 setUnderlyingNetworks(arrayOf(network))
             }
 
             override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
                 // it's a good idea to refresh capabilities
+                underlyingNetwork = network
                 setUnderlyingNetworks(arrayOf(network))
             }
 
             override fun onLost(network: Network) {
+                underlyingNetwork = null
                 setUnderlyingNetworks(null)
             }
         }
@@ -185,7 +197,17 @@ class V2RayVpnService : VpnService(), ServiceControl {
         try {
             mInterface = builder.establish()!!
             isRunning = true
-            runTun2socks()
+            val config = TunConfig().apply {
+                fileDescriptor = mInterface.fd
+                mtu = VPN_MTU
+                v2Ray = V2RayServiceManager.v2rayPoint
+                implementation = Utils.parseInt(settingsStorage?.decodeString(AppConfig.PREF_TUN_IMPLEMENTATION, AppConfig.TUN_IMPLEMENTATION) ?: AppConfig.TUN_IMPLEMENTATION)   // System TUN as default
+                sniffing = settingsStorage?.decodeBool(AppConfig.PREF_SNIFFING_ENABLED, true)
+                    ?: true
+                fakeDNS = settingsStorage?.decodeBool(AppConfig.PREF_FAKE_DNS_ENABLED)
+                    ?: false
+            }
+            v2Tun = Libv2ray.newV2Tun(config)
         } catch (e: Exception) {
             // non-nullable lateinit var
             e.printStackTrace()
@@ -193,72 +215,78 @@ class V2RayVpnService : VpnService(), ServiceControl {
         }
     }
 
-    private fun runTun2socks() {
-        val socksPort = Utils.parseInt(settingsStorage?.decodeString(AppConfig.PREF_SOCKS_PORT), AppConfig.PORT_SOCKS.toInt())
-        val cmd = arrayListOf(File(applicationContext.applicationInfo.nativeLibraryDir, TUN2SOCKS).absolutePath,
-                "--netif-ipaddr", PRIVATE_VLAN4_ROUTER,
-                "--netif-netmask", "255.255.255.252",
-                "--socks-server-addr", "127.0.0.1:${socksPort}",
-                "--tunmtu", VPN_MTU.toString(),
-                "--sock-path", "sock_path",//File(applicationContext.filesDir, "sock_path").absolutePath,
-                "--enable-udprelay",
-                "--loglevel", "notice")
+    override fun lookupIP(network: String, domain: String): String {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return runBlocking {
+                suspendCoroutine { continuation ->
+                    val signal = CancellationSignal()
+                    val callback = object : DnsResolver.Callback<Collection<InetAddress>> {
+                        @Suppress("ThrowableNotThrown")
+                        override fun onAnswer(answer: Collection<InetAddress>, rcode: Int) {
+                            // libcore/v2ray.go
+                            when {
+                                answer.isNotEmpty() -> {
+                                    try {
+                                        continuation.resumeWith(Result.success((answer as Collection<InetAddress?>).mapNotNull { it?.hostAddress }
+                                            .joinToString(",")))
+                                    } catch (_: IllegalStateException) {
+                                    }
+                                }
+                                rcode == 0 -> {
+                                    // fuck AAAA no record
+                                    // features/dns/client.go
+                                    try {
+                                        continuation.resumeWith(Result.success(""))
+                                    } catch (_: IllegalStateException) {
+                                    }
+                                }
+                                else -> {
+                                    // Need return rcode
+                                    // proxy/dns/dns.go
+                                    try {
+                                        continuation.resumeWith(Result.failure(Exception("$rcode")))
+                                    } catch (ignored: IllegalStateException) {
+                                    }
+                                }
+                            }
+                        }
 
-        if (settingsStorage?.decodeBool(AppConfig.PREF_PREFER_IPV6) == true) {
-            cmd.add("--netif-ip6addr")
-            cmd.add(PRIVATE_VLAN6_ROUTER)
-        }
-        if (settingsStorage?.decodeBool(AppConfig.PREF_LOCAL_DNS_ENABLED) == true) {
-            val localDnsPort = Utils.parseInt(settingsStorage?.decodeString(AppConfig.PREF_LOCAL_DNS_PORT), AppConfig.PORT_LOCAL_DNS.toInt())
-            cmd.add("--dnsgw")
-            cmd.add("127.0.0.1:${localDnsPort}")
-        }
-        Log.d(packageName, cmd.toString())
-
-        try {
-            val proBuilder = ProcessBuilder(cmd)
-            proBuilder.redirectErrorStream(true)
-            process = proBuilder
-                    .directory(applicationContext.filesDir)
-                    .start()
-            Thread(Runnable {
-                Log.d(packageName,"$TUN2SOCKS check")
-                process.waitFor()
-                Log.d(packageName,"$TUN2SOCKS exited")
-                if (isRunning) {
-                    Log.d(packageName,"$TUN2SOCKS restart")
-                    runTun2socks()
+                        override fun onError(error: DnsResolver.DnsException) {
+                            try {
+                                continuation.resumeWith(Result.failure(error))
+                            } catch (ignored: IllegalStateException) {
+                            }
+                        }
+                    }
+                    val type = when {
+                        network.endsWith("4") -> DnsResolver.TYPE_A
+                        network.endsWith("6") -> DnsResolver.TYPE_AAAA
+                        else -> null
+                    }
+                    if (type != null) {
+                        DnsResolver.getInstance().query(
+                            underlyingNetwork,
+                            domain,
+                            type,
+                            DnsResolver.FLAG_EMPTY,
+                            Dispatchers.IO.asExecutor(),
+                            signal,
+                            callback
+                        )
+                    } else {
+                        DnsResolver.getInstance().query(
+                            underlyingNetwork,
+                            domain,
+                            DnsResolver.FLAG_EMPTY,
+                            Dispatchers.IO.asExecutor(),
+                            signal,
+                            callback
+                        )
+                    }
                 }
-            }).start()
-            Log.d(packageName, process.toString())
-
-            sendFd()
-        } catch (e: Exception) {
-            Log.d(packageName, e.toString())
-        }
-    }
-
-    private fun sendFd() {
-        val fd = mInterface.fileDescriptor
-        val path = File(applicationContext.filesDir, "sock_path").absolutePath
-        Log.d(packageName, path)
-
-        GlobalScope.launch(Dispatchers.IO) {
-            var tries = 0
-            while (true) try {
-                Thread.sleep(50L shl tries)
-                Log.d(packageName, "sendFd tries: $tries")
-                LocalSocket().use { localSocket ->
-                    localSocket.connect(LocalSocketAddress(path, LocalSocketAddress.Namespace.FILESYSTEM))
-                    localSocket.setFileDescriptorsForSend(arrayOf(fd))
-                    localSocket.outputStream.write(42)
-                }
-                break
-            } catch (e: Exception) {
-                Log.d(packageName, e.toString())
-                if (tries > 5) break
-                tries += 1
             }
+        } else {
+            throw Exception("114514")
         }
     }
 
@@ -283,8 +311,8 @@ class V2RayVpnService : VpnService(), ServiceControl {
         }
 
         try {
-            Log.d(packageName, "tun2socks destroy")
-            process.destroy()
+            Log.d(packageName, "tun close")
+            v2Tun.close()
         } catch (e: Exception) {
             Log.d(packageName, e.toString())
         }
@@ -321,6 +349,10 @@ class V2RayVpnService : VpnService(), ServiceControl {
 
     override fun vpnProtect(socket: Int): Boolean {
         return protect(socket)
+    }
+
+    override fun isRunning(): Boolean {
+        return isRunning
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

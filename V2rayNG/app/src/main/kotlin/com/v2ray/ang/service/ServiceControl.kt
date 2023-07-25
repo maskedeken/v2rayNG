@@ -10,4 +10,6 @@ interface ServiceControl {
     fun stopService()
 
     fun vpnProtect(socket: Int): Boolean
+
+    fun isRunning(): Boolean
 }
