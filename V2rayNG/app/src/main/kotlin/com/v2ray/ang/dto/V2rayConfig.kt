@@ -463,8 +463,7 @@ data class V2rayConfig(
     }
 
     fun toPrettyPrinting(): String {
-        return GsonBuilder()
-        cd ..        .setPrettyPrinting()
+        return GsonBuilder().setPrettyPrinting()
                 .disableHtmlEscaping()
                 .registerTypeAdapter( // custom serialiser is needed here since JSON by default parse number as Double, core will fail to start
                         object : TypeToken<Double>() {}.type,
