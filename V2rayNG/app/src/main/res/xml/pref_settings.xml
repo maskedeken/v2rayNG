@@ -47,7 +47,7 @@
         <ListPreference
             android:defaultValue="1"
             android:entries="@array/tun_implementation"
-            android:entryValues="@array/int_array_2"
+            android:entryValues="@array/int_array_3"
             android:key="pref_tun_implementation"
             android:summary="%s"
             android:title="@string/tun_implementation" />

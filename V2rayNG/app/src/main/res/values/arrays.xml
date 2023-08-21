@@ -186,10 +186,12 @@
     <string-array name="tun_implementation" translatable="false">
         <item>gVisor</item>
         <item>System</item>
+        <item>Mixed</item>
     </string-array>
 
-    <string-array name="int_array_2">
+    <string-array name="int_array_3">
         <item>0</item>
         <item>1</item>
+        <item>2</item>
     </string-array>
 </resources>
