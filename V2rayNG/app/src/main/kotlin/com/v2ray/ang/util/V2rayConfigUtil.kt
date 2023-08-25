@@ -289,7 +289,7 @@ object V2rayConfigUtil {
             val remoteDns = Utils.getRemoteDnsServers()
             if (v2rayConfig.inbounds.none { e -> e.protocol == "dokodemo-door" && e.tag == "dns-in" }) {
                 val dnsInboundSettings = V2rayConfig.InboundBean.InSettingsBean(
-                        address = if (Utils.isPureIpAddress(remoteDns.first())) remoteDns.first() else "1.1.1.1",
+                        address = if (Utils.isPureIpAddress(remoteDns.first())) remoteDns.first() else AppConfig.DNS_AGENT,
                         port = 53,
                         network = "tcp,udp")
 
@@ -311,6 +311,8 @@ object V2rayConfigUtil {
                                 protocol = "dns",
                                 tag = "dns-out",
                                 settings = V2rayConfig.OutboundBean.OutSettingsBean(
+                                    address = if (Utils.isPureIpAddress(remoteDns.first())) remoteDns.first() else AppConfig.DNS_AGENT,
+                                    port = 53,
                                     nonIPQuery = "skip"
                                 ),
                                 streamSettings = null,
