@@ -17,6 +17,7 @@ object AppConfig {
     const val PREF_MODE = "pref_mode"
     const val PREF_SPEED_ENABLED = "pref_speed_enabled"
     const val PREF_SNIFFING_ENABLED = "pref_sniffing_enabled"
+    const val PREF_SNIFFING_OVERRIDE_DESTINATION = "pref_sniffing_override_destination"
     const val PREF_PROXY_SHARING = "pref_proxy_sharing_enabled"
     const val PREF_LOCAL_DNS_ENABLED = "pref_local_dns_enabled"
     const val PREF_FAKE_DNS_ENABLED = "pref_fake_dns_enabled"

@@ -90,6 +90,7 @@ object AngConfigManager {
             settingsStorage?.encode(key, sharedPreferences.getString(key, null))
         }
         listOf(
+            AppConfig.PREF_SNIFFING_OVERRIDE_DESTINATION,
             AppConfig.PREF_MUX_ENABLED,
             AppConfig.PREF_SPEED_ENABLED,
             AppConfig.PREF_PROXY_SHARING,

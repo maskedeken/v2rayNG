@@ -46,6 +46,9 @@ class SettingsActivity : BaseActivity() {
         private val muxEnabled by lazy { findPreference<CheckBoxPreference>(AppConfig.PREF_MUX_ENABLED) }
         private val muxConcurrency by lazy { findPreference<EditTextPreference>(AppConfig.PREF_MUX_CONCURRENCY) }
 
+        private val sniffingEnabled by lazy { findPreference<CheckBoxPreference>(AppConfig.PREF_SNIFFING_ENABLED) }
+        private val sniffingOverrideDest by lazy { findPreference<CheckBoxPreference>(AppConfig.PREF_SNIFFING_OVERRIDE_DESTINATION) }
+
         override fun onCreatePreferences(bundle: Bundle?, s: String?) {
             addPreferencesFromResource(R.xml.pref_settings)
 
@@ -134,6 +137,11 @@ class SettingsActivity : BaseActivity() {
                 muxConcurrency?.summary = if (TextUtils.isEmpty(nval)) AppConfig.MUX_CONCURRENCY else nval
                 true
             }
+
+            sniffingEnabled?.setOnPreferenceChangeListener { _, any ->
+                updateSniffingEnabled(any as Boolean)
+                true
+            }
         }
 
         override fun onStart() {
@@ -149,6 +157,8 @@ class SettingsActivity : BaseActivity() {
 
             updateMuxEnabled(defaultSharedPreferences.getBoolean(AppConfig.PREF_MUX_ENABLED, false))
             muxConcurrency?.summary = defaultSharedPreferences.getString(AppConfig.PREF_MUX_CONCURRENCY, AppConfig.MUX_CONCURRENCY)
+
+            updateSniffingEnabled(defaultSharedPreferences.getBoolean(AppConfig.PREF_SNIFFING_ENABLED, true))
 
             if (TextUtils.isEmpty(remoteDnsString)) {
                 remoteDnsString = AppConfig.DNS_AGENT
@@ -197,6 +207,10 @@ class SettingsActivity : BaseActivity() {
 
         private fun updateMuxEnabled(enabled: Boolean) {
             muxConcurrency?.isEnabled = enabled
+        }
+
+        private fun updateSniffingEnabled(enabled: Boolean) {
+            sniffingOverrideDest?.isEnabled = enabled
         }
     }
 

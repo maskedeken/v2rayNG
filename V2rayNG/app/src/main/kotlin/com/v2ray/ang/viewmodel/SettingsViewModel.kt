@@ -44,6 +44,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             AppConfig.PREF_MUX_CONCURRENCY, -> {
                 settingsStorage?.encode(key, sharedPreferences.getString(key, ""))
             }
+            AppConfig.PREF_SNIFFING_OVERRIDE_DESTINATION,
             AppConfig.PREF_MUX_ENABLED,
             AppConfig.PREF_SPEED_ENABLED,
             AppConfig.PREF_PROXY_SHARING,

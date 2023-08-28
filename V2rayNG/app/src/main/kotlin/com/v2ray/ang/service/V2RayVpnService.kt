@@ -204,7 +204,9 @@ class V2RayVpnService : VpnService(), ServiceControl, UnderlyingResolver {
                 implementation = Utils.parseInt(settingsStorage?.decodeString(AppConfig.PREF_TUN_IMPLEMENTATION, AppConfig.TUN_IMPLEMENTATION) ?: AppConfig.TUN_IMPLEMENTATION)   // System TUN as default
                 sniffing = settingsStorage?.decodeBool(AppConfig.PREF_SNIFFING_ENABLED, true)
                     ?: true
-                fakeDNS = settingsStorage?.decodeBool(AppConfig.PREF_FAKE_DNS_ENABLED)
+                overrideDestination = settingsStorage?.decodeBool(AppConfig.PREF_SNIFFING_OVERRIDE_DESTINATION, false)
+                    ?: false
+                fakeDNS = settingsStorage?.decodeBool(AppConfig.PREF_FAKE_DNS_ENABLED, false)
                     ?: false
             }
             v2Tun = Libv2ray.newV2Tun(config)
