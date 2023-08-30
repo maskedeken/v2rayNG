@@ -44,6 +44,7 @@ object AppConfig {
     const val PREF_START_SCAN_IMMEDIATE = "pref_start_scan_immediate"
     const val PREF_MUX_ENABLED = "pref_mux_enabled"
     const val PREF_MUX_CONCURRENCY = "pref_mux_concurrency"
+    const val PREF_TLS_FRAGMENT_ENABLED = "pref_tls_fragment_enabled"
 
     const val HTTP_PROTOCOL: String = "http://"
     const val HTTPS_PROTOCOL: String = "https://"
@@ -60,6 +61,7 @@ object AppConfig {
 
     const val TAG_AGENT = "proxy"
     const val TAG_DIRECT = "direct"
+    const val TAG_FRAGMENT = "fragment-out"
     const val TAG_BLOCKED = "block"
 
     const val androidpackagenamelistUrl = "https://raw.githubusercontent.com/2dust/androidpackagenamelist/master/proxy.txt"

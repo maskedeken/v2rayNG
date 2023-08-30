@@ -209,6 +209,7 @@
     <string name="connection_not_connected">"未连接"</string>
 
     <string name="tun_implementation">TUN 实现</string>
+    <string name="enable_tls_fragment">启用TLS Client Hello分片</string>
 
     <string-array name="share_method">
         <item>二维码</item>

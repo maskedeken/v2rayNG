@@ -69,6 +69,8 @@ object V2rayConfigUtil {
 
         v2rayConfig.outbounds[0] = outbound
 
+        tlsFragment(v2rayConfig, outbound)
+
         routing(v2rayConfig)
 
         fakedns(v2rayConfig)
@@ -445,4 +447,28 @@ object V2rayConfigUtil {
         return true
     }
 
+    private fun tlsFragment(v2rayConfig: V2rayConfig, outbound: V2rayConfig.OutboundBean) {
+        val tlsFragmentEnabled = settingsStorage?.decodeBool(AppConfig.PREF_TLS_FRAGMENT_ENABLED, false) ?: false
+        if (!tlsFragmentEnabled) {
+            return
+        }
+
+        if (outbound.streamSettings?.security == "tls" || outbound.streamSettings?.security == "reality") {
+            v2rayConfig.outbounds.add(V2rayConfig.OutboundBean(
+                tag = AppConfig.TAG_FRAGMENT,
+                protocol = "freedom",
+                settings = V2rayConfig.OutboundBean.OutSettingsBean(
+                    fragment = V2rayConfig.OutboundBean.OutSettingsBean.FragmentBean(
+                        packets = "tlshello",
+                        interval = "10-20",
+                        length = "100-200"
+                    )
+                ),
+                streamSettings = V2rayConfig.OutboundBean.StreamSettingsBean(
+                    sockopt = V2rayConfig.OutboundBean.StreamSettingsBean.SocketSettingsBean(tcpNoDelay = true)
+                )
+            ))
+            outbound.streamSettings?.sockopt = V2rayConfig.OutboundBean.StreamSettingsBean.SocketSettingsBean(dialerProxy = AppConfig.TAG_FRAGMENT)
+        }
+    }
 }

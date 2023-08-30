@@ -81,12 +81,16 @@ data class V2rayConfig(
                                    var domainStrategy: String? = null,
                                    val redirect: String? = null,
                                    val userLevel: Int? = null,
+                                   val fragment: FragmentBean? = null,
                 /*Loopback*/
                                    val inboundTag: String? = null,
                 /*Wireguard*/
                                    val secretKey: String? = null,
                                    val peers: List<WireGuardBean>? = null,
         ) {
+            data class FragmentBean(val interval: String? = null,
+                                    val length: String? = null,
+                                    val packets: String? = null)
 
             data class VnextBean(var address: String = "",
                                  var port: Int = DEFAULT_PORT,
@@ -135,8 +139,11 @@ data class V2rayConfig(
                                       var realitySettings: TlsSettingsBean? = null,
                                       var grpcSettings: GrpcSettingsBean? = null,
                                       val dsSettings: Any? = null,
-                                      val sockopt: Any? = null
+                                      var sockopt: SocketSettingsBean? = null
         ) {
+
+            data class SocketSettingsBean(val dialerProxy: String? = null,
+                                          val tcpNoDelay: Boolean? = null)
 
             data class TcpSettingsBean(var header: HeaderBean = HeaderBean(),
                                        val acceptProxyProtocol: Boolean? = null) {

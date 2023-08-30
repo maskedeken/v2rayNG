@@ -220,6 +220,7 @@
     <string name="import_subscription_failure">Import subscription failed</string>
 
     <string name="tun_implementation">TUN Implementation</string>
+    <string name="enable_tls_fragment">Enable TLS Client Hello Fragment</string>
 
     <string-array name="share_method">
         <item>QRcode</item>
