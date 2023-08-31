@@ -409,9 +409,10 @@ object V2rayConfigUtil {
 
     private fun muxObject(outbound: V2rayConfig.OutboundBean) {
         val muxEnabled = settingsStorage?.decodeBool(AppConfig.PREF_MUX_ENABLED, false) ?: false
-        val muxConcurrency = Utils.parseInt(settingsStorage?.decodeString(AppConfig.PREF_MUX_CONCURRENCY, AppConfig.MUX_CONCURRENCY) ?: AppConfig.MUX_CONCURRENCY)
+        val defaultConcurrency = AppConfig.MUX_CONCURRENCY.toInt()
+        val muxConcurrency = Utils.parseInt(settingsStorage?.decodeString(AppConfig.PREF_MUX_CONCURRENCY), defaultConcurrency)
         if (muxEnabled) {
-            outbound.mux = V2rayConfig.OutboundBean.MuxBean(enabled = true, concurrency = muxConcurrency)
+            outbound.mux = V2rayConfig.OutboundBean.MuxBean(enabled = true, concurrency = if (muxConcurrency > 0) muxConcurrency else defaultConcurrency)
         } else {
             outbound.mux = null
         }
