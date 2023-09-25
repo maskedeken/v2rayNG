@@ -165,6 +165,7 @@
         <item>Tiếng Việt</item>
         <item>Русский</item>
         <item>فارسی</item>
+        <item>عربي</item>
     </string-array>
 
 
@@ -176,6 +177,7 @@
         <item>vi</item>
         <item>ru</item>
         <item>fa</item>
+        <item>ar</item>
     </string-array>
 
     <string-array name="reduced_iv_head_entropy" translatable="false">
