@@ -45,6 +45,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 settingsStorage?.encode(key, sharedPreferences.getString(key, ""))
             }
             AppConfig.PREF_SNIFFING_OVERRIDE_DESTINATION,
+            AppConfig.PREF_V2RAY_ROUTING_BLOCK_QUIC,
             AppConfig.PREF_MUX_ENABLED,
             AppConfig.PREF_SPEED_ENABLED,
             AppConfig.PREF_PROXY_SHARING,

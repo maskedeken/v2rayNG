@@ -37,6 +37,7 @@ object AppConfig {
     const val PREF_V2RAY_ROUTING_AGENT = "pref_v2ray_routing_agent"
     const val PREF_V2RAY_ROUTING_DIRECT = "pref_v2ray_routing_direct"
     const val PREF_V2RAY_ROUTING_BLOCKED = "pref_v2ray_routing_blocked"
+    const val PREF_V2RAY_ROUTING_BLOCK_QUIC = "pref_v2ray_routing_block_quic"
     const val PREF_PER_APP_PROXY = "pref_per_app_proxy"
     const val PREF_PER_APP_PROXY_SET = "pref_per_app_proxy_set"
     const val PREF_BYPASS_APPS = "pref_bypass_apps"

@@ -122,6 +122,7 @@
     <string name="title_pref_routing_domain_strategy">域名策略</string>
     <string name="title_pref_routing_mode">预定义规则</string>
     <string name="title_pref_routing_custom">自定义规则</string>
+    <string name="title_pref_v2ray_routing_block_quic" translatable="false">屏蔽QUIC</string>
 
     <string name="title_pref_remote_dns">远程DNS (可选)</string>
     <string name="summary_pref_remote_dns">DNS</string>

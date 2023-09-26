@@ -130,6 +130,7 @@
     <string name="title_pref_routing_domain_strategy">Domain strategy</string>
     <string name="title_pref_routing_mode">Predefined rules</string>
     <string name="title_pref_routing_custom">Custom rules</string>
+    <string name="title_pref_v2ray_routing_block_quic" translatable="false">Block QUIC</string>
 
     <string name="title_pref_remote_dns">Remote DNS (Optional)</string>
     <string name="summary_pref_remote_dns">DNS</string>

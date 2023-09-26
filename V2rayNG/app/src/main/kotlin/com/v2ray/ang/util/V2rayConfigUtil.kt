@@ -152,6 +152,16 @@ object V2rayConfigUtil {
             routingUserRule(settingsStorage?.decodeString(AppConfig.PREF_V2RAY_ROUTING_BLOCKED)
                     ?: "", AppConfig.TAG_BLOCKED, v2rayConfig)
 
+            if (settingsStorage?.decodeBool(AppConfig.PREF_V2RAY_ROUTING_BLOCK_QUIC, false) == true) {
+                // block QUIC
+                v2rayConfig.routing.rules.add(V2rayConfig.RoutingBean.RulesBean(
+                    type = "field",
+                    outboundTag = AppConfig.TAG_BLOCKED,
+                    network = "udp",
+                    port = "443"
+                ))
+            }
+
             v2rayConfig.routing.domainStrategy = settingsStorage?.decodeString(AppConfig.PREF_ROUTING_DOMAIN_STRATEGY)
                     ?: "IPIfNonMatch"
 //            v2rayConfig.routing.domainMatcher = "mph"
