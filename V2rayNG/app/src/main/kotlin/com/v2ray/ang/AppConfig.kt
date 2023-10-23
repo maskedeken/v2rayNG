@@ -70,7 +70,9 @@ object AppConfig {
     const val v2rayNGIssues = "https://github.com/2dust/v2rayNG/issues"
     const val v2rayNGWikiMode = "https://github.com/2dust/v2rayNG/wiki/Mode"
     const val promotionUrl = "aHR0cHM6Ly85LjIzNDQ1Ni54eXovYWJjLmh0bWw="
-    const val geoUrl = "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/";
+//    const val geoUrl = "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/"
+    const val geoipUrl = "https://github.com/v2fly/geoip/releases/latest/download/geoip.dat"
+    const val geositeUrl = "https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat"
 
     const val DNS_AGENT = "1.1.1.1"
     const val DNS_DIRECT = "223.5.5.5"

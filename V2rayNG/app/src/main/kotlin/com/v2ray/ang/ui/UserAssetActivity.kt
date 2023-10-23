@@ -30,8 +30,6 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
-import java.net.InetSocketAddress
-import java.net.Proxy
 import java.net.URL
 import java.text.DateFormat
 import java.util.*
@@ -41,7 +39,7 @@ class UserAssetActivity : BaseActivity() {
     private val settingsStorage by lazy { MMKV.mmkvWithID(MmkvManager.ID_SETTING, MMKV.MULTI_PROCESS_MODE) }
 
     val extDir by lazy { File(Utils.userAssetPath(this)) }
-    val geofiles = arrayOf("geosite.dat", "geoip.dat")
+    val geofiles = mapOf("geosite.dat" to AppConfig.geositeUrl, "geoip.dat" to AppConfig.geoipUrl)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -145,21 +143,21 @@ class UserAssetActivity : BaseActivity() {
         geofiles.forEach {
             //toast(getString(R.string.msg_downloading_content) + it)
             lifecycleScope.launch(Dispatchers.IO) {
-                val result = downloadGeo(it, 60000)
+                val name = it.key
+                val result = downloadGeo(name, it.value,60000)
                 launch(Dispatchers.Main) {
                     if (result) {
-                        toast(getString(R.string.toast_success) + " " + it)
+                        toast(getString(R.string.toast_success) + " " + name)
                         binding.recyclerView.adapter?.notifyDataSetChanged()
                     } else {
-                        toast(getString(R.string.toast_failure) + " " + it)
+                        toast(getString(R.string.toast_failure) + " " + name)
                     }
                 }
             }
         }
     }
 
-    private fun downloadGeo(name: String, timeout: Int): Boolean {
-        val url = AppConfig.geoUrl + name
+    private fun downloadGeo(name: String, url: String, timeout: Int): Boolean {
         val targetTemp = File(extDir, name + "_temp")
         val target = File(extDir, name)
         var conn: HttpURLConnection? = null
