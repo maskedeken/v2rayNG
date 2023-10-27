@@ -9,6 +9,12 @@ import android.os.Build
 import android.os.CancellationSignal
 import android.os.ParcelFileDescriptor
 import android.os.StrictMode
+import android.system.ErrnoException
+import android.system.Os
+import android.system.OsConstants.AF_INET
+import android.system.OsConstants.AF_INET6
+import android.system.OsConstants.IPPROTO_UDP
+import android.system.OsConstants.SOCK_DGRAM
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.tencent.mmkv.MMKV
@@ -21,14 +27,18 @@ import com.v2ray.ang.util.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.runBlocking
-import java.lang.ref.SoftReference
-
+import libv2ray.ExchangeContext
 import libv2ray.Libv2ray
 import libv2ray.TunConfig
-import libv2ray.V2Tun
 import libv2ray.UnderlyingResolver
-import java.net.InetAddress
+import libv2ray.V2Tun
+import java.io.IOException
+import java.lang.ref.SoftReference
+import java.net.InetSocketAddress
+import java.net.SocketAddress
+import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+
 
 class V2RayVpnService : VpnService(), ServiceControl, UnderlyingResolver {
     companion object {
@@ -217,80 +227,91 @@ class V2RayVpnService : VpnService(), ServiceControl, UnderlyingResolver {
         }
     }
 
-    override fun lookupIP(network: String, domain: String): String {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            return runBlocking {
-                suspendCoroutine { continuation ->
-                    val signal = CancellationSignal()
-                    val callback = object : DnsResolver.Callback<Collection<InetAddress>> {
-                        @Suppress("ThrowableNotThrown")
-                        override fun onAnswer(answer: Collection<InetAddress>, rcode: Int) {
-                            // libcore/v2ray.go
-                            when {
-                                answer.isNotEmpty() -> {
-                                    try {
-                                        continuation.resumeWith(Result.success((answer as Collection<InetAddress?>).mapNotNull { it?.hostAddress }
-                                            .joinToString(",")))
-                                    } catch (_: IllegalStateException) {
-                                    }
-                                }
-                                rcode == 0 -> {
-                                    // fuck AAAA no record
-                                    // features/dns/client.go
-                                    try {
-                                        continuation.resumeWith(Result.success(""))
-                                    } catch (_: IllegalStateException) {
-                                    }
-                                }
-                                else -> {
-                                    // Need return rcode
-                                    // proxy/dns/dns.go
-                                    try {
-                                        continuation.resumeWith(Result.failure(Exception("$rcode")))
-                                    } catch (ignored: IllegalStateException) {
-                                    }
-                                }
+    @RequiresApi(Build.VERSION_CODES.Q)
+    override fun exchange(ctx: ExchangeContext,  message: ByteArray) {
+        return runBlocking {
+            suspendCoroutine { continuation ->
+                val signal = CancellationSignal()
+                ctx.onCancel(signal::cancel)
+                val callback = object : DnsResolver.Callback<ByteArray> {
+                    override fun onAnswer(answer: ByteArray, rcode: Int) {
+                        // exchange don't generate rcode error
+                        ctx.success(answer)
+                        continuation.resume(Unit)
+                    }
+
+                    override fun onError(error: DnsResolver.DnsException) {
+                        when (val cause = error.cause) {
+                            is ErrnoException -> {
+                                ctx.errnoCode(cause.errno)
+                                continuation.resume(Unit)
+                                return
                             }
                         }
 
-                        override fun onError(error: DnsResolver.DnsException) {
-                            try {
-                                continuation.resumeWith(Result.failure(error))
-                            } catch (ignored: IllegalStateException) {
-                            }
-                        }
-                    }
-                    val type = when {
-                        network.endsWith("4") -> DnsResolver.TYPE_A
-                        network.endsWith("6") -> DnsResolver.TYPE_AAAA
-                        else -> null
-                    }
-                    if (type != null) {
-                        DnsResolver.getInstance().query(
-                            underlyingNetwork,
-                            domain,
-                            type,
-                            DnsResolver.FLAG_EMPTY,
-                            Dispatchers.IO.asExecutor(),
-                            signal,
-                            callback
-                        )
-                    } else {
-                        DnsResolver.getInstance().query(
-                            underlyingNetwork,
-                            domain,
-                            DnsResolver.FLAG_EMPTY,
-                            Dispatchers.IO.asExecutor(),
-                            signal,
-                            callback
-                        )
+                        try {
+                            continuation.resumeWith(Result.failure(error))
+                        } catch (ignored: IllegalStateException) {}
                     }
                 }
+                DnsResolver.getInstance().rawQuery(
+                    underlyingNetwork,
+                    message,
+                    DnsResolver.FLAG_NO_RETRY,
+                    Dispatchers.IO.asExecutor(),
+                    signal,
+                    callback
+                )
             }
-        } else {
-            throw Exception("114514")
         }
     }
+
+    /**
+     * Check if given network has Ipv4 capability
+     * This function matches the behaviour of have_ipv4 in the native resolver.
+     */
+    @RequiresApi(Build.VERSION_CODES.Q)
+    override fun haveIPv4(): Boolean {
+        val addrIpv4: SocketAddress =
+            InetSocketAddress(InetAddresses.parseNumericAddress("8.8.8.8"), 0)
+        return checkConnectivity(AF_INET, addrIpv4)
+    }
+
+    /**
+     * Check if given network has Ipv6 capability
+     * This function matches the behaviour of have_ipv6 in the native resolver.
+     */
+    @RequiresApi(Build.VERSION_CODES.Q)
+    override fun haveIPv6(): Boolean {
+        val addrIpv6: SocketAddress =
+            InetSocketAddress(InetAddresses.parseNumericAddress("2000::"), 0)
+        return checkConnectivity(AF_INET6, addrIpv6)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun checkConnectivity(
+        domain: Int, addr: SocketAddress
+    ): Boolean {
+        val socket = try {
+            Os.socket(domain, SOCK_DGRAM, IPPROTO_UDP)
+        } catch (e: ErrnoException) {
+            return false
+        }
+        try {
+            underlyingNetwork?.bindSocket(socket)
+            Os.connect(socket, addr)
+        } catch (e: IOException) {
+            return false
+        } catch (e: ErrnoException) {
+            return false
+        } finally {
+            try {
+                Os.close(socket)
+            } catch (ignored: IOException) {}
+        }
+        return true
+    }
+
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         V2RayServiceManager.startV2rayPoint()
