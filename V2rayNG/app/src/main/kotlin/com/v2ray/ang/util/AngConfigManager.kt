@@ -85,7 +85,6 @@ object AngConfigManager {
             AppConfig.PREF_V2RAY_ROUTING_AGENT,
             AppConfig.PREF_V2RAY_ROUTING_BLOCKED,
             AppConfig.PREF_V2RAY_ROUTING_DIRECT,
-            AppConfig.PREF_MUX_CONCURRENCY,
         ).forEach { key ->
             settingsStorage?.encode(key, sharedPreferences.getString(key, null))
         }

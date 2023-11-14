@@ -44,7 +44,8 @@ object AppConfig {
     const val PREF_CONFIRM_REMOVE = "pref_confirm_remove"
     const val PREF_START_SCAN_IMMEDIATE = "pref_start_scan_immediate"
     const val PREF_MUX_ENABLED = "pref_mux_enabled"
-    const val PREF_MUX_CONCURRENCY = "pref_mux_concurrency"
+    const val PREF_MUX_XUDP_CONCURRENCY = "pref_mux_xudp_concurency"
+    const val PREF_MUX_XUDP_QUIC = "pref_mux_xudp_quic"
     const val PREF_TLS_FRAGMENT_ENABLED = "pref_tls_fragment_enabled"
 
     const val HTTP_PROTOCOL: String = "http://"
@@ -98,5 +99,11 @@ object AppConfig {
     const val MSG_MEASURE_CONFIG_CANCEL = 72
 
     const val TUN_IMPLEMENTATION = "1"
-    const val MUX_CONCURRENCY = "8"
+    
+    // subscription settings
+    const val SUBSCRIPTION_AUTO_UPDATE = "pref_auto_update_subscription"
+    const val SUBSCRIPTION_AUTO_UPDATE_INTERVAL = "pref_auto_update_interval"
+    const val SUBSCRIPTION_DEFAULT_UPDATE_INTERVAL = "1440" // 24 hours
+    const val SUBSCRIPTION_UPDATE_TASK_NAME = "subscription_updater"
+
 }

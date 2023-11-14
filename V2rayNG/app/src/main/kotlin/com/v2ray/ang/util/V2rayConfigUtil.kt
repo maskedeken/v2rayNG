@@ -64,8 +64,7 @@ object V2rayConfigUtil {
 
         inbounds(v2rayConfig)
 
-        muxObject(outbound)
-        httpRequestObject(outbound)
+        updateOutboundWithGlobalSettings(outbound)
 
         v2rayConfig.outbounds[0] = outbound
 
@@ -417,19 +416,16 @@ object V2rayConfigUtil {
         return true
     }
 
-    private fun muxObject(outbound: V2rayConfig.OutboundBean) {
-        val muxEnabled = settingsStorage?.decodeBool(AppConfig.PREF_MUX_ENABLED, false) ?: false
-        val defaultConcurrency = AppConfig.MUX_CONCURRENCY.toInt()
-        val muxConcurrency = Utils.parseInt(settingsStorage?.decodeString(AppConfig.PREF_MUX_CONCURRENCY), defaultConcurrency)
-        if (muxEnabled) {
-            outbound.mux = V2rayConfig.OutboundBean.MuxBean(enabled = true, concurrency = if (muxConcurrency > 0) muxConcurrency else defaultConcurrency)
-        } else {
-            outbound.mux = null
-        }
-    }
-
-    private fun httpRequestObject(outbound: V2rayConfig.OutboundBean): Boolean {
+    private fun updateOutboundWithGlobalSettings(outbound: V2rayConfig.OutboundBean): Boolean {
         try {
+            if (settingsStorage?.decodeBool(AppConfig.PREF_MUX_ENABLED) == true) {
+                outbound.mux = V2rayConfig.OutboundBean.MuxBean(enabled = true, concurrency = 8)
+                outbound.mux!!.xudpConcurrency = Utils.parseInt(settingsStorage?.decodeString(AppConfig.PREF_MUX_XUDP_CONCURRENCY), 8)
+                outbound.mux!!.xudpProxyUDP443 = settingsStorage?.decodeString(AppConfig.PREF_MUX_XUDP_QUIC) ?: "reject"
+            } else {
+                outbound.mux = null
+            }
+
             if (outbound.streamSettings?.network == DEFAULT_NETWORK
                     && outbound.streamSettings?.tcpSettings?.header?.type == HTTP) {
                 val path = outbound.streamSettings?.tcpSettings?.header?.request?.path

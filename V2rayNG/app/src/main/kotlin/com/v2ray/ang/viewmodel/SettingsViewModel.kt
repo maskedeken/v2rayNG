@@ -41,7 +41,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             AppConfig.PREF_V2RAY_ROUTING_AGENT,
             AppConfig.PREF_V2RAY_ROUTING_BLOCKED,
             AppConfig.PREF_V2RAY_ROUTING_DIRECT,
-            AppConfig.PREF_MUX_CONCURRENCY, -> {
+            AppConfig.SUBSCRIPTION_AUTO_UPDATE_INTERVAL,
+            AppConfig.PREF_MUX_XUDP_QUIC, -> {
                 settingsStorage?.encode(key, sharedPreferences.getString(key, ""))
             }
             AppConfig.PREF_SNIFFING_OVERRIDE_DESTINATION,
@@ -57,11 +58,16 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             AppConfig.PREF_PER_APP_PROXY,
             AppConfig.PREF_BYPASS_APPS,
             AppConfig.PREF_CONFIRM_REMOVE,
-            AppConfig.PREF_START_SCAN_IMMEDIATE, -> {
+            AppConfig.PREF_START_SCAN_IMMEDIATE,
+            AppConfig.SUBSCRIPTION_AUTO_UPDATE,
+            AppConfig.PREF_MUX_ENABLED, -> {
                 settingsStorage?.encode(key, sharedPreferences.getBoolean(key, false))
             }
             AppConfig.PREF_SNIFFING_ENABLED -> {
                 settingsStorage?.encode(key, sharedPreferences.getBoolean(key, true))
+            }
+            AppConfig.PREF_MUX_XUDP_CONCURRENCY -> {
+                settingsStorage?.encode(key, sharedPreferences.getString(key, "8")?.toIntOrNull() ?: 8)
             }
             AppConfig.PREF_PER_APP_PROXY_SET -> {
                 settingsStorage?.encode(key, sharedPreferences.getStringSet(key, setOf()))
