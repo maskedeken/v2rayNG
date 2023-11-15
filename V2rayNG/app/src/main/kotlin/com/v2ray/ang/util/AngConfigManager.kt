@@ -274,11 +274,10 @@ object AngConfigManager {
                             vmessQRCode.path
                         )
 
-                        val fingerprint = vmessQRCode.fp ?: streamSetting.tlsSettings?.fingerprint
                         streamSetting.populateTlsSettings(
                             vmessQRCode.tls, allowInsecure,
                             if (TextUtils.isEmpty(vmessQRCode.sni)) sni else vmessQRCode.sni,
-                            fingerprint, vmessQRCode.alpn, null, null, null
+                            vmessQRCode.fp, vmessQRCode.alpn, null, null, null
                         )
                     }
                 }
@@ -407,7 +406,6 @@ object AngConfigManager {
                     .associate { it.split("=").let { (k, v) -> k to Utils.urlDecode(v) } }
                 config = ServerConfig.create(EConfigType.VLESS)
                 val streamSetting = config.outboundBean?.streamSettings ?: return -1
-                var fingerprint = streamSetting.tlsSettings?.fingerprint
 
                 config.remarks = Utils.urlDecode(uri.fragment ?: "")
                 config.outboundBean?.settings?.vnext?.get(0)?.let { vnext ->
@@ -429,7 +427,7 @@ object AngConfigManager {
                     queryParam["mode"],
                     queryParam["serviceName"]
                 )
-                fingerprint = queryParam["fp"] ?: ""
+                val fingerprint = queryParam["fp"] ?: ""
                 val pbk = queryParam["pbk"] ?: ""
                 val sid = queryParam["sid"] ?: ""
                 val spx = Utils.urlDecode(queryParam["spx"] ?: "")

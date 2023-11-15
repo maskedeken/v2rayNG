@@ -292,6 +292,7 @@ class SettingsActivity : BaseActivity() {
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun onModeHelpClicked(view: View) {
         Utils.openUri(this, AppConfig.v2rayNGWikiMode)
     }

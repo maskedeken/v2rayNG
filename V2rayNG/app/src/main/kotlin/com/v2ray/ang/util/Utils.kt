@@ -367,6 +367,7 @@ object Utils {
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun getLocale(context: Context): Locale =
         when (settingsStorage?.decodeString(AppConfig.PREF_LANGUAGE) ?: "auto") {
             "auto" ->  getSysLocale()
