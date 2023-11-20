@@ -419,6 +419,7 @@ object V2rayConfigUtil {
     private fun updateOutboundWithGlobalSettings(outbound: V2rayConfig.OutboundBean): Boolean {
         try {
             var muxEnabled = settingsStorage?.decodeBool(AppConfig.PREF_MUX_ENABLED, false)
+
             val protocol = outbound.protocol
             if (protocol.equals(EConfigType.VLESS.name, true)
                 && outbound.settings?.vnext?.get(0)?.users?.get(0)?.flow?.isNotEmpty() == true
@@ -427,7 +428,8 @@ object V2rayConfigUtil {
             }
 
             if (muxEnabled == true) {
-                outbound.mux = V2rayConfig.OutboundBean.MuxBean(enabled = true,
+                outbound.mux = V2rayConfig.OutboundBean.MuxBean(
+                    enabled = true,
                     concurrency = 8,
                     xudpConcurrency = Utils.parseInt(settingsStorage?.decodeString(AppConfig.PREF_MUX_XUDP_CONCURRENCY), 8),
                     xudpProxyUDP443 = settingsStorage?.decodeString(AppConfig.PREF_MUX_XUDP_QUIC) ?: "reject"

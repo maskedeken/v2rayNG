@@ -79,7 +79,6 @@ object AngConfigManager {
             AppConfig.PREF_SOCKS_PORT,
             AppConfig.PREF_HTTP_PORT,
             AppConfig.PREF_LOGLEVEL,
-            AppConfig.PREF_TUN_IMPLEMENTATION,
             AppConfig.PREF_ROUTING_DOMAIN_STRATEGY,
             AppConfig.PREF_ROUTING_MODE,
             AppConfig.PREF_V2RAY_ROUTING_AGENT,
@@ -89,13 +88,9 @@ object AngConfigManager {
             settingsStorage?.encode(key, sharedPreferences.getString(key, null))
         }
         listOf(
-            AppConfig.PREF_SNIFFING_OVERRIDE_DESTINATION,
-            AppConfig.PREF_V2RAY_ROUTING_BLOCK_QUIC,
-            AppConfig.PREF_MUX_ENABLED,
             AppConfig.PREF_SPEED_ENABLED,
             AppConfig.PREF_PROXY_SHARING,
             AppConfig.PREF_LOCAL_DNS_ENABLED,
-            AppConfig.PREF_TLS_FRAGMENT_ENABLED,
             AppConfig.PREF_ALLOW_INSECURE,
             AppConfig.PREF_PREFER_IPV6,
             AppConfig.PREF_PER_APP_PROXY,
