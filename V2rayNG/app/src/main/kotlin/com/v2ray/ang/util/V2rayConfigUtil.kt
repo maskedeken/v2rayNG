@@ -133,9 +133,11 @@ object V2rayConfigUtil {
     private fun fakedns(v2rayConfig: V2rayConfig) {
         if (settingsStorage?.decodeBool(AppConfig.PREF_FAKE_DNS_ENABLED) == true) {
             v2rayConfig.fakedns = listOf(V2rayConfig.FakednsBean(ipPool = "198.18.0.0/15"), V2rayConfig.FakednsBean(ipPool = "fc00::/18"))
+            /*
             v2rayConfig.outbounds.filter { it.protocol == "freedom" }.forEach {
                 it.settings?.domainStrategy = "UseIP"
             }
+            */
         }
     }
 
