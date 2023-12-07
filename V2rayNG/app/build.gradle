@@ -21,11 +21,21 @@ android {
         versionName "1.8.12"
     }
 
+    signingConfigs {
+        release {
+            storeFile rootProject.file("release.jks")
+            storePassword getProps("KEYSTORE_PASS")
+            keyAlias getProps("ALIAS_NAME")
+            keyPassword getProps("ALIAS_PASS")
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             zipAlignEnabled false
             shrinkResources false
+            signingConfig signingConfigs.release
 //            ndk.abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
         }
         debug {
@@ -137,4 +147,33 @@ dependencies {
 
     implementation "androidx.work:work-runtime-ktx:$work_version"
     implementation "androidx.work:work-multiprocess:$work_version"
+}
+
+def requireLocalProperties() {
+    if (!project.ext.has("localProperties")) {
+        def localProperties = new Properties()
+        project.ext.set("localProperties", localProperties)
+
+        String base64 = System.getenv("LOCAL_PROPERTIES")
+        if (base64) {
+            localProperties.load(new ByteArrayInputStream(Base64.getDecoder().decode(base64)))
+        } else {
+            def file = rootProject.file("local.properties")
+            if (file.exists()) {
+                localProperties.load(new FileInputStream(file))
+            }
+        }
+    }
+
+    return project.ext.get("localProperties")
+}
+
+def getProps(String propName) {
+    def lp = requireLocalProperties()
+    String value = lp[propName]
+    if (value == null) {
+        return ""
+    }
+
+    return value
 }

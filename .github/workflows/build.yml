@@ -50,11 +50,11 @@ jobs:
       run: |
         cd ${{ github.workspace }}/V2rayNG
         chmod 777 *
-        sed -i 's/org.gradle.jvmargs=-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8/org.gradle.jvmargs=-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8/' ${{ github.workspace }}/V2rayNG/gradle.properties
-        ./gradlew assembleDebug
+        export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
+        ./gradlew assembleRelease
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
         name: apk
-        path: ${{ github.workspace }}/V2rayNG/app/build/outputs/apk/debug/
+        path: ${{ github.workspace }}/V2rayNG/app/build/outputs/apk/release/
