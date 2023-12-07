@@ -43,6 +43,7 @@ jobs:
         gomobile init
         go mod tidy -v
         gomobile bind -v -androidapi 21 -trimpath -ldflags='-s -w -buildid=' -tags with_gvisor ./
+        mkdir -p ${{ github.workspace }}/V2rayNG/app/libs
         cp *.aar ${{ github.workspace }}/V2rayNG/app/libs/
 
     - name: Build APK
