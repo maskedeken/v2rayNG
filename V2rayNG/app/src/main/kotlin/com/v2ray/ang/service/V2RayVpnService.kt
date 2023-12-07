@@ -10,11 +10,6 @@ import android.os.CancellationSignal
 import android.os.ParcelFileDescriptor
 import android.os.StrictMode
 import android.system.ErrnoException
-import android.system.Os
-import android.system.OsConstants.AF_INET
-import android.system.OsConstants.AF_INET6
-import android.system.OsConstants.IPPROTO_UDP
-import android.system.OsConstants.SOCK_DGRAM
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.tencent.mmkv.MMKV
@@ -32,10 +27,7 @@ import libv2ray.Libv2ray
 import libv2ray.TunConfig
 import libv2ray.UnderlyingResolver
 import libv2ray.V2Tun
-import java.io.IOException
 import java.lang.ref.SoftReference
-import java.net.InetSocketAddress
-import java.net.SocketAddress
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -265,53 +257,6 @@ class V2RayVpnService : VpnService(), ServiceControl, UnderlyingResolver {
             }
         }
     }
-
-    /**
-     * Check if given network has Ipv4 capability
-     * This function matches the behaviour of have_ipv4 in the native resolver.
-     */
-    @RequiresApi(Build.VERSION_CODES.Q)
-    override fun haveIPv4(): Boolean {
-        val addrIpv4: SocketAddress =
-            InetSocketAddress(InetAddresses.parseNumericAddress("8.8.8.8"), 0)
-        return checkConnectivity(AF_INET, addrIpv4)
-    }
-
-    /**
-     * Check if given network has Ipv6 capability
-     * This function matches the behaviour of have_ipv6 in the native resolver.
-     */
-    @RequiresApi(Build.VERSION_CODES.Q)
-    override fun haveIPv6(): Boolean {
-        val addrIpv6: SocketAddress =
-            InetSocketAddress(InetAddresses.parseNumericAddress("2000::"), 0)
-        return checkConnectivity(AF_INET6, addrIpv6)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun checkConnectivity(
-        domain: Int, addr: SocketAddress
-    ): Boolean {
-        val socket = try {
-            Os.socket(domain, SOCK_DGRAM, IPPROTO_UDP)
-        } catch (e: ErrnoException) {
-            return false
-        }
-        try {
-            underlyingNetwork?.bindSocket(socket)
-            Os.connect(socket, addr)
-        } catch (e: IOException) {
-            return false
-        } catch (e: ErrnoException) {
-            return false
-        } finally {
-            try {
-                Os.close(socket)
-            } catch (ignored: IOException) {}
-        }
-        return true
-    }
-
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         V2RayServiceManager.startV2rayPoint()
