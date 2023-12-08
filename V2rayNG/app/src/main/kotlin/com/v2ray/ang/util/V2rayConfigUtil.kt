@@ -432,7 +432,7 @@ object V2rayConfigUtil {
             if (muxEnabled == true) {
                 outbound.mux = V2rayConfig.OutboundBean.MuxBean(
                     enabled = true,
-                    concurrency = 8,
+                    concurrency = Utils.parseInt(settingsStorage?.decodeString(AppConfig.PREF_MUX_CONCURRENCY), 8),
                     xudpConcurrency = Utils.parseInt(settingsStorage?.decodeString(AppConfig.PREF_MUX_XUDP_CONCURRENCY), 8),
                     xudpProxyUDP443 = settingsStorage?.decodeString(AppConfig.PREF_MUX_XUDP_QUIC) ?: "reject"
                 )
