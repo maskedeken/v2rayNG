@@ -74,7 +74,7 @@ data class V2rayConfig(
                                    var response: Response? = null,
                 /*DNS*/
                                    val network: String? = null,
-                                   val address: Any? = null,
+                                   var address: Any? = null,
                                    val port: Int? = null,
                                    val nonIPQuery: String? = null,
                 /*Freedom*/
@@ -85,8 +85,9 @@ data class V2rayConfig(
                 /*Loopback*/
                                    val inboundTag: String? = null,
                 /*Wireguard*/
-                                   val secretKey: String? = null,
+                                   var secretKey: String? = null,
                                    val peers: List<WireGuardBean>? = null,
+                                   var reserved: List<Int>? = null,
         ) {
             data class FragmentBean(val interval: String? = null,
                                     val length: String? = null,

@@ -421,14 +421,12 @@ object V2rayConfigUtil {
     private fun updateOutboundWithGlobalSettings(outbound: V2rayConfig.OutboundBean): Boolean {
         try {
             var muxEnabled = settingsStorage?.decodeBool(AppConfig.PREF_MUX_ENABLED, false)
-
             val protocol = outbound.protocol
             if (protocol.equals(EConfigType.VLESS.name, true)
                 && outbound.settings?.vnext?.get(0)?.users?.get(0)?.flow?.isNotEmpty() == true
             ) {
                 muxEnabled = false
             }
-
             if (muxEnabled == true) {
                 outbound.mux = V2rayConfig.OutboundBean.MuxBean(
                     enabled = true,
@@ -439,6 +437,14 @@ object V2rayConfigUtil {
             } else {
                 outbound.mux?.enabled = false
                 outbound.mux?.concurrency = -1
+            }
+
+            if (protocol.equals(EConfigType.WIREGUARD.name, true)) {
+                val localTunAddr = mutableListOf("172.16.0.2/32")
+                if (settingsStorage?.decodeBool(AppConfig.PREF_PREFER_IPV6) == true) {
+                    localTunAddr.add("2606:4700:110:8f81:d551:a0:532e:a2b3/128")
+                }
+                outbound.settings?.address = localTunAddr
             }
 
             if (outbound.streamSettings?.network == DEFAULT_NETWORK
