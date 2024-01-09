@@ -422,7 +422,8 @@ object V2rayConfigUtil {
         try {
             var muxEnabled = settingsStorage?.decodeBool(AppConfig.PREF_MUX_ENABLED, false)
             val protocol = outbound.protocol
-            if (protocol.equals(EConfigType.VLESS.name, true)
+            if (protocol.equals(EConfigType.WIREGUARD.name, true)
+                || protocol.equals(EConfigType.VLESS.name, true)
                 && outbound.settings?.vnext?.get(0)?.users?.get(0)?.flow?.isNotEmpty() == true
             ) {
                 muxEnabled = false
