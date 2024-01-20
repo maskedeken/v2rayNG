@@ -88,6 +88,7 @@ data class V2rayConfig(
                                    var secretKey: String? = null,
                                    val peers: List<WireGuardBean>? = null,
                                    var reserved: List<Int>? = null,
+                                   var mtu :Int? = null
         ) {
             data class FragmentBean(val interval: String? = null,
                                     val length: String? = null,
