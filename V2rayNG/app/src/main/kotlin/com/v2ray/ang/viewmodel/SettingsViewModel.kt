@@ -42,6 +42,9 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             AppConfig.PREF_V2RAY_ROUTING_BLOCKED,
             AppConfig.PREF_V2RAY_ROUTING_DIRECT,
             AppConfig.SUBSCRIPTION_AUTO_UPDATE_INTERVAL,
+            AppConfig.PREF_FRAGMENT_PACKETS,
+            AppConfig.PREF_FRAGMENT_LENGTH,
+            AppConfig.PREF_FRAGMENT_INTERVAL,
             AppConfig.PREF_MUX_XUDP_QUIC, -> {
                 settingsStorage?.encode(key, sharedPreferences.getString(key, ""))
             }
@@ -51,7 +54,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             AppConfig.PREF_PROXY_SHARING,
             AppConfig.PREF_LOCAL_DNS_ENABLED,
             AppConfig.PREF_FAKE_DNS_ENABLED,
-            AppConfig.PREF_TLS_FRAGMENT_ENABLED,
             AppConfig.PREF_ALLOW_INSECURE,
             AppConfig.PREF_PREFER_IPV6,
             AppConfig.PREF_PER_APP_PROXY,
@@ -59,6 +61,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             AppConfig.PREF_CONFIRM_REMOVE,
             AppConfig.PREF_START_SCAN_IMMEDIATE,
             AppConfig.SUBSCRIPTION_AUTO_UPDATE,
+            AppConfig.PREF_FRAGMENT_ENABLED,
             AppConfig.PREF_MUX_ENABLED, -> {
                 settingsStorage?.encode(key, sharedPreferences.getBoolean(key, false))
             }

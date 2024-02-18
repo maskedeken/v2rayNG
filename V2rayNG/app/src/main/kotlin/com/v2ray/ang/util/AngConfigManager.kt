@@ -7,11 +7,12 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.preference.PreferenceManager
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.tencent.mmkv.MMKV
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.AppConfig.ANG_CONFIG
-import com.v2ray.ang.AppConfig.HTTPS_PROTOCOL
-import com.v2ray.ang.AppConfig.HTTP_PROTOCOL
+import com.v2ray.ang.AppConfig.PROTOCOL_HTTPS
+import com.v2ray.ang.AppConfig.PROTOCOL_HTTP
 import com.v2ray.ang.AppConfig.WIREGUARD_LOCAL_ADDRESS_V4
 import com.v2ray.ang.AppConfig.WIREGUARD_LOCAL_MTU
 import com.v2ray.ang.R
@@ -23,7 +24,6 @@ import java.net.URI
 import java.util.*
 import com.v2ray.ang.extension.idnHost
 import com.v2ray.ang.extension.removeWhiteSpace
-import com.v2ray.ang.extension.toast
 
 object AngConfigManager {
     private val mainStorage by lazy {
@@ -215,8 +215,8 @@ object AngConfigManager {
             }
 
             //maybe sub
-            if (TextUtils.isEmpty(subid) && (str.startsWith(HTTP_PROTOCOL) || str.startsWith(
-                    HTTPS_PROTOCOL
+            if (TextUtils.isEmpty(subid) && (str.startsWith(PROTOCOL_HTTP) || str.startsWith(
+                    PROTOCOL_HTTPS
                 ))
             ) {
                 MmkvManager.importUrlAsSubscription(str)
@@ -484,7 +484,7 @@ object AngConfigManager {
         allowInsecure: Boolean
     ): Boolean {
         return runCatching {
-            val uri = URI(uriString)
+            val uri = URI(Utils.fixIllegalUrl(uriString))
             check(uri.scheme == "vmess")
             val (_, protocol, tlsStr, uuid, alterId) =
                 Regex("(tcp|http|ws|kcp|quic|grpc)(\\+tls)?:([0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12})")
@@ -777,7 +777,8 @@ object AngConfigManager {
                         dicQuery["reserved"] = Utils.urlEncode(
                             Utils.removeWhiteSpace(outbound.settings?.reserved?.joinToString())
                                 .toString()
-                        )}
+                        )
+                    }
                     dicQuery["address"] = Utils.urlEncode(
                         Utils.removeWhiteSpace((outbound.settings?.address as List<*>).joinToString())
                             .toString()
@@ -983,10 +984,37 @@ object AngConfigManager {
             && server.contains("outbounds")
             && server.contains("routing")
         ) {
+            try {
+                val gson = GsonBuilder().setPrettyPrinting().create()
+                val serverList: Array<V2rayConfig> =
+                    Gson().fromJson(server, Array<V2rayConfig>::class.java)
+                if (serverList.isNotEmpty()) {
+                    var count = 0
+                    for (srv in serverList) {
+                        if (srv.inbounds != null && srv.outbounds != null && srv.routing != null) {
+                            val config = ServerConfig.create(EConfigType.CUSTOM)
+                            config.remarks = srv.remarks
+                                ?: ("%04d-".format(count + 1) + System.currentTimeMillis()
+                                    .toString())
+                            config.subscriptionId = subid
+                            config.fullConfig = srv
+                            val key = MmkvManager.encodeServerConfig("", config)
+                            serverRawStorage?.encode(key, gson.toJson(srv))
+                            count += 1
+                        }
+                    }
+                    return count
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            // For compatibility
             val config = ServerConfig.create(EConfigType.CUSTOM)
-            config.remarks = System.currentTimeMillis().toString()
             config.subscriptionId = subid
             config.fullConfig = Gson().fromJson(server, V2rayConfig::class.java)
+            config.remarks = System.currentTimeMillis().toString()
+            // config.remarks = config.fullConfig?.remarks ?: System.currentTimeMillis().toString()
             val key = MmkvManager.encodeServerConfig("", config)
             serverRawStorage?.encode(key, server)
             return 1
