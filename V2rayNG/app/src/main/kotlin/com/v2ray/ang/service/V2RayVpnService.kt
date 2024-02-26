@@ -288,7 +288,7 @@ class V2RayVpnService : VpnService(), ServiceControl, UnderlyingResolver {
 
         if (isForced) {
             //stopSelf has to be called ahead of mInterface.close(). otherwise v2ray core cannot be stooped
-            //It's strage but true.
+            //It's strange but true.
             //This can be verified by putting stopself() behind and call stopLoop and startLoop
             //in a row for several times. You will find that later created v2ray core report port in use
             //which means the first v2ray core somehow failed to stop and release the port.
