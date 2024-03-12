@@ -8,6 +8,11 @@ import android.util.Log
 import androidx.preference.PreferenceManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
+import com.google.gson.annotations.SerializedName
+import com.google.gson.reflect.TypeToken
 import com.tencent.mmkv.MMKV
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.AppConfig.ANG_CONFIG
@@ -22,6 +27,7 @@ import com.v2ray.ang.dto.V2rayConfig.Companion.TLS
 import com.v2ray.ang.util.MmkvManager.KEY_SELECTED_SERVER
 import java.net.URI
 import java.util.*
+import java.lang.reflect.Type
 import com.v2ray.ang.extension.idnHost
 import com.v2ray.ang.extension.removeWhiteSpace
 
@@ -985,23 +991,30 @@ object AngConfigManager {
             && server.contains("routing")
         ) {
             try {
-                val gson = GsonBuilder().setPrettyPrinting().create()
+                //val gson = GsonBuilder().setPrettyPrinting().create()
+                val gson = GsonBuilder()
+                            .setPrettyPrinting()
+                            .disableHtmlEscaping()
+                            .registerTypeAdapter( // custom serialiser is needed here since JSON by default parse number as Double, core will fail to start
+                                    object : TypeToken<Double>() {}.type,
+                                    JsonSerializer { src: Double?, _: Type?, _: JsonSerializationContext? -> JsonPrimitive(src?.toInt()) }
+                            )
+                            .create()
                 val serverList: Array<V2rayConfig> =
-                    Gson().fromJson(server, Array<V2rayConfig>::class.java)
+                Gson().fromJson(server, Array<V2rayConfig>::class.java)
+
                 if (serverList.isNotEmpty()) {
                     var count = 0
                     for (srv in serverList) {
-                        if (srv.inbounds != null && srv.outbounds != null && srv.routing != null) {
-                            val config = ServerConfig.create(EConfigType.CUSTOM)
-                            config.remarks = srv.remarks
-                                ?: "%04d-".format(count + 1) + System.currentTimeMillis()
-                                    .toString()
-                            config.subscriptionId = subid
-                            config.fullConfig = srv
-                            val key = MmkvManager.encodeServerConfig("", config)
-                            serverRawStorage?.encode(key, gson.toJson(srv))
-                            count += 1
-                        }
+                        val config = ServerConfig.create(EConfigType.CUSTOM)
+                        config.remarks = srv.remarks
+                            ?: ("%04d-".format(count + 1) + System.currentTimeMillis()
+                                .toString())
+                        config.subscriptionId = subid
+                        config.fullConfig = srv
+                        val key = MmkvManager.encodeServerConfig("", config)
+                        serverRawStorage?.encode(key, gson.toJson(srv))
+                        count += 1
                     }
                     return count
                 }
@@ -1013,8 +1026,7 @@ object AngConfigManager {
             val config = ServerConfig.create(EConfigType.CUSTOM)
             config.subscriptionId = subid
             config.fullConfig = Gson().fromJson(server, V2rayConfig::class.java)
-            config.remarks = System.currentTimeMillis().toString()
-            // config.remarks = config.fullConfig?.remarks ?: System.currentTimeMillis().toString()
+            config.remarks = config.fullConfig?.remarks ?: System.currentTimeMillis().toString()
             val key = MmkvManager.encodeServerConfig("", config)
             serverRawStorage?.encode(key, server)
             return 1
