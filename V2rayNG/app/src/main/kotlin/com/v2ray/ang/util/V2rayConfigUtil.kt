@@ -2,17 +2,16 @@ package com.v2ray.ang.util
 
 import android.content.Context
 import android.text.TextUtils
-import com.google.gson.*
+import com.google.gson.Gson
 import com.tencent.mmkv.MMKV
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.AppConfig.PROTOCOL_FREEDOM
-import com.v2ray.ang.AppConfig.TAG_DIRECT
 import com.v2ray.ang.AppConfig.TAG_FRAGMENT
 import com.v2ray.ang.AppConfig.WIREGUARD_LOCAL_ADDRESS_V4
 import com.v2ray.ang.AppConfig.WIREGUARD_LOCAL_ADDRESS_V6
-import com.v2ray.ang.dto.V2rayConfig
 import com.v2ray.ang.dto.EConfigType
 import com.v2ray.ang.dto.ERoutingMode
+import com.v2ray.ang.dto.V2rayConfig
 import com.v2ray.ang.dto.V2rayConfig.Companion.DEFAULT_NETWORK
 import com.v2ray.ang.dto.V2rayConfig.Companion.HTTP
 
@@ -332,22 +331,24 @@ object V2rayConfigUtil {
     private fun customLocalDns(v2rayConfig: V2rayConfig): Boolean {
         try {
             if (settingsStorage?.decodeBool(AppConfig.PREF_FAKE_DNS_ENABLED) == true) {
-                val geositeCn = arrayListOf("geosite:cn")
-                val proxyDomain = userRule2Domian(
-                    settingsStorage?.decodeString(AppConfig.PREF_V2RAY_ROUTING_AGENT)
-                        ?: ""
-                )
-                val directDomain = userRule2Domian(
-                    settingsStorage?.decodeString(AppConfig.PREF_V2RAY_ROUTING_DIRECT)
-                        ?: ""
-                )
+                val allDomains = mutableListOf<String>()
+                v2rayConfig.dns.servers?.forEach { server ->
+                    if (server is V2rayConfig.DnsBean.ServersBean) {
+                        server.domains?.let { it ->
+                            allDomains.addAll(it)
+                        }
+                    }
+                }
                 // fakedns with all domains to make it always top priority
                 v2rayConfig.dns.servers?.add(
                     0,
                     V2rayConfig.DnsBean.ServersBean(
                         address = "fakedns",
-                        domains = geositeCn.plus(proxyDomain).plus(directDomain)
-                    )
+                    ).apply {
+                        if (allDomains.isNotEmpty()) {
+                            domains = allDomains
+                        }
+                    }
                 )
             }
 
