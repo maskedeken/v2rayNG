@@ -153,7 +153,7 @@ fun requireLocalProperties(): Properties {
     return localProperties
 }
 
-fun getProps(propName: String): String {
+fun getProps(propName: String): String? {
     val lp = requireLocalProperties()
     return lp.getProperty(propName) ?: System.getenv(propName)
 }
