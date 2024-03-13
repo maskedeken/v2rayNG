@@ -137,7 +137,7 @@ data class V2rayConfig(
                                       var tcpSettings: TcpSettingsBean? = null,
                                       var kcpSettings: KcpSettingsBean? = null,
                                       var wsSettings: WsSettingsBean? = null,
-                                      var httpUpgradeSettings: HttpUpgradeSettingsBean? = null,
+                                      var httpupgradeSettings: HttpupgradeSettingsBean? = null,
                                       var httpSettings: HttpSettingsBean? = null,
                                       var tlsSettings: TlsSettingsBean? = null,
                                       var quicSettings: QuicSettingBean? = null,
@@ -187,8 +187,9 @@ data class V2rayConfig(
                 data class HeadersBean(var Host: String = "")
             }
 
-            data class HttpUpgradeSettingsBean(var host: String = "",
-                                               var path: String = "")
+            data class HttpupgradeSettingsBean(var path: String = "",
+                                               var host: String = "",
+                                               val acceptProxyProtocol: Boolean? = null)
 
             data class HttpSettingsBean(var host: List<String> = ArrayList(),
                                         var path: String = "")
@@ -266,11 +267,11 @@ data class V2rayConfig(
                         wsSettings = wssetting
                     }
                     "httpupgrade" -> {
-                        val httpUpgradeSetting = HttpUpgradeSettingsBean()
-                        httpUpgradeSetting.host = host ?: ""
-                        sni = httpUpgradeSetting.host
-                        httpUpgradeSetting.path = path ?: "/"
-                        httpUpgradeSettings = httpUpgradeSetting
+                        val httpupgradeSetting = HttpupgradeSettingsBean()
+                        httpupgradeSetting.host = host ?: ""
+                        sni = httpupgradeSetting.host
+                        httpupgradeSetting.path = path ?: "/"
+                        httpupgradeSettings = httpupgradeSetting
                     }
                     "h2", "http" -> {
                         network = "h2"
@@ -402,10 +403,10 @@ data class V2rayConfig(
                                 wsSetting.path)
                     }
                     "httpupgrade" -> {
-                        val httpUpgradeSetting = streamSettings?.httpUpgradeSettings ?: return null
+                        val httpupgradeSetting = streamSettings?.httpupgradeSettings ?: return null
                         listOf("",
-                            httpUpgradeSetting.host,
-                            httpUpgradeSetting.path)
+                            httpupgradeSetting.host,
+                            httpupgradeSetting.path)
                     }
                     "h2" -> {
                         val h2Setting = streamSettings?.httpSettings ?: return null
