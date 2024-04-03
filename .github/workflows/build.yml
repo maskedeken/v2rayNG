@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        submodules: 'true'
       
     - name: Setup Java
       uses: actions/setup-java@v4
@@ -36,9 +38,6 @@ jobs:
 
     - name: Build dependencies
       run: |
-        mkdir ${{ github.workspace }}/build
-        cd ${{ github.workspace }}/build
-        git clone --depth=1 -b main https://github.com/maskedeken/AndroidLibXrayLite.git
         cd AndroidLibXrayLite
         gomobile init
         go mod tidy -v
