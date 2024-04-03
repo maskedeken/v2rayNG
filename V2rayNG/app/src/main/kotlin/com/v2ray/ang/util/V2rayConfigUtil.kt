@@ -572,12 +572,9 @@ object V2rayConfigUtil {
                     mux = null
                 )
 
+            val security = v2rayConfig.outbounds[0].streamSettings?.security
             var packets = settingsStorage?.decodeString(AppConfig.PREF_FRAGMENT_PACKETS) ?: "tlshello"
-            if (v2rayConfig.outbounds[0].streamSettings?.security == V2rayConfig.REALITY
-                && packets == "tlshello"
-            ) {
-                packets = "1-3"
-            } else if (v2rayConfig.outbounds[0].streamSettings?.security == V2rayConfig.TLS
+            if ((security == V2rayConfig.TLS || security == V2rayConfig.REALITY)
                 && packets != "tlshello"
             ) {
                 packets = "tlshello"
