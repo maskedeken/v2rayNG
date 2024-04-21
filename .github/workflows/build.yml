@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -24,7 +24,7 @@ jobs:
     - name: Setup Golang
       uses: actions/setup-go@v5
       with:
-        go-version: '1.22'
+        go-version: '1.22.2'
 
     - name: Install gomobile
       run: |
@@ -34,7 +34,7 @@ jobs:
 
     - name: Setup Android environment
       uses: android-actions/setup-android@v3
-  
+
 
     - name: Build dependencies
       run: |
@@ -48,7 +48,7 @@ jobs:
     - name: Build APK
       run: |
         cd ${{ github.workspace }}/V2rayNG
-        chmod 777 *
+        chmod 755 gradlew
         export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
         ./gradlew assembleRelease
 
