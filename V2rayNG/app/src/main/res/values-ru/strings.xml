@@ -123,6 +123,9 @@
 
     <string name="title_pref_sniffing_enabled">Анализ пакетов</string>
     <string name="summary_pref_sniffing_enabled">Использовать анализ пакетов (по умолчанию включено)</string>
+    <string name="title_pref_route_only_enabled">Enable routeOnly</string>
+    <string name="summary_pref_route_only_enabled">Use the sniffed domain name for routing only, and keep the target address as the IP address.</string>
+
 
     <string name="title_pref_local_dns_enabled">Использовать локальную DNS</string>
     <string name="summary_pref_local_dns_enabled">Обслуживание выполняется DNS-модулем ядра (в настройках маршрутизации рекомендуется выбрать режим «Все, кроме LAN и Китая»)</string>
@@ -179,6 +182,7 @@
     <string name="title_configuration_backup">Резервирование</string>
     <string name="summary_configuration_backup">Путь: [%s]. Резервная копия будет стёрта при удалении приложения или очистке хранилища.</string>
     <string name="title_configuration_restore">Восстановление</string>
+    <string name="title_configuration_share">Поделиться</string>
 
     <string name="title_pref_promotion">Содействие</string>
     <string name="summary_pref_promotion">Содействие, нажмите для получения подробной информации (пожертвование может быть удалено)</string>

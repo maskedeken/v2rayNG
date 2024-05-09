@@ -10,9 +10,9 @@
 
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="pref_sniffing_override_destination"
-        android:summary="@string/summary_pref_sniffing_override_destination"
-        android:title="@string/title_pref_sniffing_override_destination" />
+        android:key="pref_route_only_enabled"
+        android:summary="@string/summary_pref_route_only_enabled"
+        android:title="@string/title_pref_route_only_enabled" />
 
     <PreferenceCategory android:title="@string/title_vpn_settings">
         <CheckBoxPreference

@@ -66,9 +66,6 @@ class SettingsActivity : BaseActivity() {
         private val domesticDns by lazy { findPreference<EditTextPreference>(AppConfig.PREF_DOMESTIC_DNS) }
         private val mode by lazy { findPreference<ListPreference>(AppConfig.PREF_MODE) }
 
-        private val sniffingEnabled by lazy { findPreference<CheckBoxPreference>(AppConfig.PREF_SNIFFING_ENABLED) }
-        private val sniffingOverrideDest by lazy { findPreference<CheckBoxPreference>(AppConfig.PREF_SNIFFING_OVERRIDE_DESTINATION) }
-
         override fun onCreatePreferences(bundle: Bundle?, s: String?) {
             addPreferencesFromResource(R.xml.pref_settings)
 
@@ -96,10 +93,7 @@ class SettingsActivity : BaseActivity() {
                 startActivity(Intent(activity, RoutingSettingsActivity::class.java))
                 false
             }
-            sniffingEnabled?.setOnPreferenceChangeListener { _, any ->
-                updateSniffingEnabled(any as Boolean)
-                true
-            }
+
             mux?.setOnPreferenceChangeListener { _, newValue ->
                 updateMux(newValue as Boolean)
                 true
@@ -194,8 +188,6 @@ class SettingsActivity : BaseActivity() {
             muxConcurrency?.summary = settingsStorage.decodeString(AppConfig.PREF_MUX_CONCURRENCY, "8")
             muxXudpConcurrency?.summary = settingsStorage.decodeString(AppConfig.PREF_MUX_XUDP_CONCURRENCY, "8")
 
-            updateSniffingEnabled(settingsStorage.getBoolean(AppConfig.PREF_SNIFFING_ENABLED, true))
-
             updateFragment(settingsStorage.getBoolean(AppConfig.PREF_FRAGMENT_ENABLED, false))
             fragment?.isChecked = settingsStorage.getBoolean(AppConfig.PREF_FRAGMENT_ENABLED, false)
             fragmentPackets?.summary = settingsStorage.decodeString(AppConfig.PREF_FRAGMENT_PACKETS, "tlshello")
@@ -239,6 +231,7 @@ class SettingsActivity : BaseActivity() {
             }
 
             listOf(
+                AppConfig.PREF_ROUTE_ONLY_ENABLED,
                 AppConfig.PREF_BYPASS_APPS,
                 AppConfig.PREF_SPEED_ENABLED,
                 AppConfig.PREF_CONFIRM_REMOVE,
@@ -246,7 +239,6 @@ class SettingsActivity : BaseActivity() {
                 AppConfig.PREF_PREFER_IPV6,
                 AppConfig.PREF_PROXY_SHARING,
                 AppConfig.PREF_ALLOW_INSECURE,
-                AppConfig.PREF_SNIFFING_OVERRIDE_DESTINATION,
                 AppConfig.PREF_V2RAY_ROUTING_BLOCK_QUIC
             ).forEach { key ->
                 findPreference<CheckBoxPreference>(key)?.isChecked =
@@ -293,10 +285,6 @@ class SettingsActivity : BaseActivity() {
             fakeDns?.isEnabled = enabled
             localDnsPort?.isEnabled = enabled
             vpnDns?.isEnabled = !enabled
-        }
-
-        private fun updateSniffingEnabled(enabled: Boolean) {
-            sniffingOverrideDest?.isEnabled = enabled
         }
 
         private fun configureUpdateTask(interval: Long) {

@@ -121,9 +121,8 @@
 
     <string name="title_pref_sniffing_enabled">启用流量探测</string>
     <string name="summary_pref_sniffing_enabled">从流量中探测域名 (默认启用)</string>
-
-    <string name="title_pref_sniffing_override_destination">覆写目标地址</string>
-    <string name="summary_pref_sniffing_override_destination">嗅探结果用于覆写目标地址</string>
+    <string name="title_pref_route_only_enabled">启用 routeOnly</string>
+    <string name="summary_pref_route_only_enabled">将嗅探得到的域名仅用于路由，代理目标地址仍为 IP</string>
 
     <string name="title_pref_local_dns_enabled">启用本地DNS</string>
     <string name="summary_pref_local_dns_enabled">DNS 请求导入 core 由 DNS 模块处理（推荐启用 如果需要路由绕过局域网及大陆地址)</string>
@@ -181,6 +180,7 @@
     <string name="title_configuration_backup">备份配置</string>
     <string name="summary_configuration_backup">存储位置: [%s], 卸载App或清除存储后备份将被清除</string>
     <string name="title_configuration_restore">还原配置</string>
+    <string name="title_configuration_share">分享配置</string>
 
     <string name="title_pref_promotion">推广</string>
     <string name="summary_pref_promotion">一些推广,点击查看详情(捐赠可去除)</string>
