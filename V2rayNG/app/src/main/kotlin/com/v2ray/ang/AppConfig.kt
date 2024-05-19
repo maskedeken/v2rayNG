@@ -62,6 +62,7 @@ object AppConfig {
     const val PREF_HTTP_PORT = "pref_http_port"
     const val PREF_REMOTE_DNS = "pref_remote_dns"
     const val PREF_DOMESTIC_DNS = "pref_domestic_dns"
+    const val PREF_DELAY_TEST_URL = "pref_delay_test_url"
     const val PREF_LOGLEVEL = "pref_core_loglevel"
     const val PREF_MODE = "pref_mode"
 
@@ -102,6 +103,7 @@ object AppConfig {
     const val geoipUrl = "https://github.com/v2fly/geoip/releases/latest/download/geoip.dat"
     const val geositeUrl = "https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat"
     const val TgChannelUrl = "https://t.me/github_2dust"
+    const val DelayTestUrl = "https://www.gstatic.com/generate_204"
 
     const val DNS_PROXY = "1.1.1.1"
     const val DNS_DIRECT = "223.5.5.5"
