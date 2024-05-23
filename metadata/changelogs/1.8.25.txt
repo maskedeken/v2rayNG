@@ -1,0 +1,1 @@
+- https://github.com/XTLS/Xray-core/releases/tag/v1.8.13
