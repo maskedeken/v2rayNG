@@ -1,0 +1,5 @@
+- 新增SplitHTTP 传输方式，https://github.com/XTLS/Xray-core/releases/tag/v1.8.16
+- 更新订阅时显示等待进度
+- 延迟测试失败后重试一次
+- 新增一个url订阅后，立即自动更新订阅
+

@@ -104,6 +104,7 @@ object AppConfig {
     const val geositeUrl = "https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat"
     const val TgChannelUrl = "https://t.me/github_2dust"
     const val DelayTestUrl = "https://www.gstatic.com/generate_204"
+    const val DelayTestUrl2 = "https://www.google.com/generate_204"
 
     const val DNS_PROXY = "1.1.1.1"
     const val DNS_DIRECT = "223.5.5.5"

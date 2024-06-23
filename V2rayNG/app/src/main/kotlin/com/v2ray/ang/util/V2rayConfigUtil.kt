@@ -203,10 +203,10 @@ object V2rayConfigUtil {
             val routingMode = settingsStorage?.decodeString(AppConfig.PREF_ROUTING_MODE)
                 ?: ERoutingMode.BYPASS_LAN_MAINLAND.value
 
-            // Hardcode googleapis.cn
+            // Hardcode googleapis.cn gstatic.com
             val googleapisRoute = V2rayConfig.RoutingBean.RulesBean(
                 outboundTag = AppConfig.TAG_PROXY,
-                domain = arrayListOf("domain:googleapis.cn")
+                domain = arrayListOf("domain:googleapis.cn", "domain:gstatic.com")
             )
 
             when (routingMode) {
@@ -304,10 +304,10 @@ object V2rayConfigUtil {
                         rulesDomain.domain?.add(it)
                     }
                 }
-                if (rulesDomain.domain?.size!! > 0) {
+                if ((rulesDomain.domain?.size ?: 0) > 0) {
                     v2rayConfig.routing.rules.add(rulesDomain)
                 }
-                if (rulesIP.ip?.size!! > 0) {
+                if ((rulesIP.ip?.size ?: 0) > 0) {
                     v2rayConfig.routing.rules.add(rulesIP)
                 }
             }
@@ -562,7 +562,7 @@ object V2rayConfigUtil {
                     } else {
                         path
                     }
-                outbound.streamSettings?.tcpSettings?.header?.request?.headers?.Host = host!!
+                outbound.streamSettings?.tcpSettings?.header?.request?.headers?.Host = host
             }
 
 
