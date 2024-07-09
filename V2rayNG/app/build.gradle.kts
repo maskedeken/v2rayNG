@@ -14,8 +14,8 @@ android {
         applicationId = "com.v2ray.ang"
         minSdk = 21
         targetSdk = 34
-        versionCode = 565
-        versionName = "1.8.26"
+        versionCode = 571
+        versionName = "1.8.28"
         multiDexEnabled = true
         splits.abi {
             reset()
@@ -65,16 +65,14 @@ android {
     splits {
         abi {
             isEnable = true
-            isUniversalApk = false
-            reset()
-            include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+            isUniversalApk = true
         }
     }
 
     applicationVariants.all {
         val variant = this
         val versionCodes =
-            mapOf("armeabi-v7a" to 1, "arm64-v8a" to 2, "x86" to 3, "x86_64" to 4)
+            mapOf("armeabi-v7a" to 4, "arm64-v8a" to 4, "x86" to 4, "x86_64" to 4, "universal" to 4)
 
         variant.outputs
             .map { it as com.android.build.gradle.internal.api.ApkVariantOutputImpl }
@@ -82,7 +80,7 @@ android {
                 val abi = if (output.getFilter("ABI") != null)
                     output.getFilter("ABI")
                 else
-                    "all"
+                    "universal"
 
                 output.outputFileName = "v2rayNG_${variant.versionName}_${abi}.apk"
                 if(versionCodes.containsKey(abi))
@@ -100,12 +98,19 @@ android {
         viewBinding = true
         buildConfig = true
     }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar","*.jar"))))
     testImplementation("junit:junit:4.13.2")
 
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
     // Androidx
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
@@ -114,15 +119,15 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("androidx.fragment:fragment-ktx:1.7.1")
+    implementation("androidx.fragment:fragment-ktx:1.8.1")
     implementation("androidx.multidex:multidex:2.0.1")
     implementation("androidx.viewpager2:viewpager2:1.1.0")
 
     // Androidx ktx
     implementation("androidx.activity:activity-ktx:1.9.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.1")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.3")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.3")
 
     //kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.23")
