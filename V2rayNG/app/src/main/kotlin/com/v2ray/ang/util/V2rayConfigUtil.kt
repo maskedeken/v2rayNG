@@ -589,9 +589,7 @@ object V2rayConfigUtil {
             if (settingsStorage?.decodeBool(AppConfig.PREF_FRAGMENT_ENABLED, false) == false) {
                 return true
             }
-            if (v2rayConfig.outbounds[0].streamSettings?.security != V2rayConfig.TLS
-                && v2rayConfig.outbounds[0].streamSettings?.security != V2rayConfig.REALITY
-            ) {
+            if (v2rayConfig.outbounds[0].protocol.equals(EConfigType.WIREGUARD.name, true)) {
                 return true
             }
 
