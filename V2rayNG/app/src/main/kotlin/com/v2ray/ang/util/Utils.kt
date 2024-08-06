@@ -63,14 +63,9 @@ object Utils {
     }
 
     fun parseInt(str: String?, default: Int): Int {
-        str ?: return default
-        return try {
-            Integer.parseInt(str)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            default
-        }
+        return str?.toIntOrNull() ?: default
     }
+
 
     /**
      * get text from clipboard
@@ -102,22 +97,18 @@ object Utils {
      * base64 decode
      */
     fun decode(text: String?): String {
-        tryDecodeBase64(text)?.let { return it }
-        if (text?.endsWith('=')==true) {
-            // try again for some loosely formatted base64
-            tryDecodeBase64(text.trimEnd('='))?.let { return it }
-        }
-        return ""
+        return tryDecodeBase64(text) ?: text?.trimEnd('=')?.let { tryDecodeBase64(it) } ?: ""
     }
+
 
     fun tryDecodeBase64(text: String?): String? {
         try {
-            return Base64.decode(text, Base64.NO_WRAP).toString(charset("UTF-8"))
+            return Base64.decode(text, Base64.NO_WRAP).toString(Charsets.UTF_8)
         } catch (e: Exception) {
             Log.i(ANG_PACKAGE, "Parse base64 standard failed $e")
         }
         try {
-            return Base64.decode(text, Base64.NO_WRAP.or(Base64.URL_SAFE)).toString(charset("UTF-8"))
+            return Base64.decode(text, Base64.NO_WRAP.or(Base64.URL_SAFE)).toString(Charsets.UTF_8)
         } catch (e: Exception) {
             Log.i(ANG_PACKAGE, "Parse base64 url safe failed $e")
         }
@@ -129,7 +120,7 @@ object Utils {
      */
     fun encode(text: String): String {
         return try {
-            Base64.encodeToString(text.toByteArray(charset("UTF-8")), Base64.NO_WRAP)
+            Base64.encodeToString(text.toByteArray(Charsets.UTF_8), Base64.NO_WRAP)
         } catch (e: Exception) {
             e.printStackTrace()
             ""
@@ -228,7 +219,7 @@ object Utils {
     }
 
     private fun isCoreDNSAddress(s: String): Boolean {
-        return s.startsWith("https") || s.startsWith("tcp") || s.startsWith("quic")
+        return s.startsWith("https") || s.startsWith("tcp") || s.startsWith("quic") || s == "localhost"
     }
 
     /**
@@ -288,7 +279,7 @@ object Utils {
 
     fun urlDecode(url: String): String {
         return try {
-            URLDecoder.decode(url, "UTF-8")
+            URLDecoder.decode(url, Charsets.UTF_8.toString())
         } catch (e: Exception) {
             e.printStackTrace()
             url
@@ -297,7 +288,7 @@ object Utils {
 
     fun urlEncode(url: String): String {
         return try {
-            URLEncoder.encode(url, "UTF-8")
+            URLEncoder.encode(url, Charsets.UTF_8.toString())
         } catch (e: Exception) {
             e.printStackTrace()
             url
@@ -336,7 +327,7 @@ object Utils {
     }
 
     fun getDeviceIdForXUDPBaseKey(): String {
-        val androidId = Settings.Secure.ANDROID_ID.toByteArray(charset("UTF-8"))
+        val androidId = Settings.Secure.ANDROID_ID.toByteArray(Charsets.UTF_8)
         return Base64.encodeToString(androidId.copyOf(32), Base64.NO_PADDING.or(Base64.URL_SAFE))
     }
 
@@ -389,9 +380,9 @@ object Utils {
     }
 
     fun getDarkModeStatus(context: Context): Boolean {
-        val mode = context.resources.configuration.uiMode and UI_MODE_NIGHT_MASK
-        return mode != UI_MODE_NIGHT_NO
+        return context.resources.configuration.uiMode and UI_MODE_NIGHT_MASK != UI_MODE_NIGHT_NO
     }
+
 
     fun setNightMode(context: Context) {
         when (settingsStorage?.decodeString(AppConfig.PREF_UI_MODE_NIGHT, "0")) {
@@ -412,18 +403,21 @@ object Utils {
         }
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun getLocale(context: Context): Locale =
-        when (settingsStorage?.decodeString(AppConfig.PREF_LANGUAGE) ?: "auto") {
-            "auto" ->  getSysLocale()
-            "en" -> Locale("en")
-            "zh-rCN" -> Locale("zh", "CN")
-            "zh-rTW" -> Locale("zh", "TW")
+    fun getLocale(): Locale {
+        val lang = settingsStorage?.decodeString(AppConfig.PREF_LANGUAGE) ?: "auto"
+        return when (lang) {
+            "auto" -> getSysLocale()
+            "en" -> Locale.ENGLISH
+            "zh-rCN" -> Locale.CHINA
+            "zh-rTW" -> Locale.TRADITIONAL_CHINESE
             "vi" -> Locale("vi")
             "ru" -> Locale("ru")
             "fa" -> Locale("fa")
+            "bn" -> Locale("bn")
             else -> getSysLocale()
         }
+    }
+
 
     private fun getSysLocale(): Locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         LocaleList.getDefault()[0]
@@ -450,18 +444,14 @@ object Utils {
     fun isTv(context: Context): Boolean =
         context.packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
 
-    fun getDelayTestUrl(): String {
-        val url = settingsStorage.decodeString(AppConfig.PREF_DELAY_TEST_URL)
-        return if (url.isNullOrEmpty()) AppConfig.DelayTestUrl else url
-    }
-
     fun getDelayTestUrl(second: Boolean = false): String {
         return if (second) {
             AppConfig.DelayTestUrl2
         } else {
-            val url = settingsStorage.decodeString(AppConfig.PREF_DELAY_TEST_URL)
-            if (url.isNullOrEmpty()) AppConfig.DelayTestUrl else url
+            settingsStorage.decodeString(AppConfig.PREF_DELAY_TEST_URL) ?: AppConfig.DelayTestUrl
         }
     }
+
+
 }
 

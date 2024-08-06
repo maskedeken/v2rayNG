@@ -23,7 +23,9 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> {
-            onBackPressed()
+            // Handles the home button press by delegating to the onBackPressedDispatcher.
+            // This ensures consistent back navigation behavior.
+            onBackPressedDispatcher.onBackPressed()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -32,7 +34,7 @@ abstract class BaseActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun attachBaseContext(newBase: Context?) {
         val context = newBase?.let {
-            MyContextWrapper.wrap(newBase,  Utils.getLocale(newBase))
+            MyContextWrapper.wrap(newBase,  Utils.getLocale())
         }
         super.attachBaseContext(context)
     }
