@@ -16,7 +16,7 @@ import com.v2ray.ang.util.Utils
 import java.io.File
 
 class UserAssetUrlActivity : BaseActivity() {
-    private lateinit var binding: ActivityUserAssetUrlBinding
+    private val binding by lazy { ActivityUserAssetUrlBinding.inflate(layoutInflater) }
 
     var del_config: MenuItem? = null
     var save_config: MenuItem? = null
@@ -27,9 +27,7 @@ class UserAssetUrlActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityUserAssetUrlBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        setContentView(binding.root)
         title = getString(R.string.title_user_asset_add_url)
 
         val json = assetStorage?.decodeString(editAssetId)
@@ -114,7 +112,7 @@ class UserAssetUrlActivity : BaseActivity() {
                     MmkvManager.removeAssetUrl(editAssetId)
                     finish()
                 }
-                .setNegativeButton(android.R.string.no) {_, _ ->
+                .setNegativeButton(android.R.string.no) { _, _ ->
                     // do nothing
                 }
                 .show()
@@ -139,10 +137,12 @@ class UserAssetUrlActivity : BaseActivity() {
             deleteServer()
             true
         }
+
         R.id.save_config -> {
             saveServer()
             true
         }
+
         else -> super.onOptionsItemSelected(item)
     }
 }

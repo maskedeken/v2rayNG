@@ -4,7 +4,12 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.*
+import android.net.ConnectivityManager
+import android.net.DnsResolver
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
+import android.net.VpnService
 import android.os.Build
 import android.os.CancellationSignal
 import android.os.ParcelFileDescriptor
@@ -63,9 +68,9 @@ class V2RayVpnService : VpnService(), ServiceControl, UnderlyingResolver {
     @delegate:RequiresApi(Build.VERSION_CODES.P)
     private val defaultNetworkRequest by lazy {
         NetworkRequest.Builder()
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED)
-                .build()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED)
+            .build()
     }
 
     private val connectivity by lazy { getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager }
@@ -152,11 +157,11 @@ class V2RayVpnService : VpnService(), ServiceControl, UnderlyingResolver {
             builder.addDnsServer(PRIVATE_VLAN4_ROUTER)
         } else {
             Utils.getVpnDnsServers()
-                    .forEach {
-                        if (Utils.isPureIpAddress(it)) {
-                            builder.addDnsServer(it)
-                        }
+                .forEach {
+                    if (Utils.isPureIpAddress(it)) {
+                        builder.addDnsServer(it)
                     }
+                }
         }
 
         builder.setSession(V2RayServiceManager.currentConfig?.remarks.orEmpty())
@@ -269,7 +274,7 @@ class V2RayVpnService : VpnService(), ServiceControl, UnderlyingResolver {
 //        val emptyInfo = VpnNetworkInfo()
 //        val info = loadVpnNetworkInfo(configName, emptyInfo)!! + (lastNetworkInfo ?: emptyInfo)
 //        saveVpnNetworkInfo(configName, info)
-        isRunning = false;
+        isRunning = false
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             try {
                 connectivity.unregisterNetworkCallback(defaultNetworkCallback)
@@ -326,7 +331,7 @@ class V2RayVpnService : VpnService(), ServiceControl, UnderlyingResolver {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun attachBaseContext(newBase: Context?) {
         val context = newBase?.let {
-            MyContextWrapper.wrap(newBase,  Utils.getLocale())
+            MyContextWrapper.wrap(newBase, Utils.getLocale())
         }
         super.attachBaseContext(context)
     }

@@ -386,7 +386,7 @@ object AngConfigManager {
 //        }
 //    }
 
-    fun importBatchConfig(server: String?, subid: String, append: Boolean): Pair<Int, Int>   {
+    fun importBatchConfig(server: String?, subid: String, append: Boolean): Pair<Int, Int> {
         var count = parseBatchConfig(Utils.decode(server), subid, append)
         if (count <= 0) {
             count = parseBatchConfig(server, subid, append)
@@ -434,7 +434,7 @@ object AngConfigManager {
             val removedSelectedServer =
                 if (!TextUtils.isEmpty(subid) && !append) {
                     MmkvManager.decodeServerConfig(
-                        mainStorage?.decodeString(KEY_SELECTED_SERVER) ?: ""
+                        mainStorage?.decodeString(KEY_SELECTED_SERVER).orEmpty()
                     )?.let {
                         if (it.subscriptionId == subid) {
                             return@let it
@@ -535,7 +535,7 @@ object AngConfigManager {
         return count
     }
 
-    private fun updateConfigViaSub(it: Pair<String, SubscriptionItem>): Int {
+    fun updateConfigViaSub(it: Pair<String, SubscriptionItem>): Int {
         try {
             if (TextUtils.isEmpty(it.first)
                 || TextUtils.isEmpty(it.second.remarks)

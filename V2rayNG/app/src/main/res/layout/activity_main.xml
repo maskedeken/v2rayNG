@@ -37,13 +37,21 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/pb_waiting"
+                        app:indicatorColor="@color/color_fab_active"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true"
+                        android:visibility="invisible" />
+
                     <com.google.android.material.tabs.TabLayout
                         android:id="@+id/tab_group"
                         app:tabMode="scrollable"
                         app:tabTextAppearance="@style/TabLayoutTextStyle"
                         app:tabIndicatorFullWidth="false"
                         android:layout_height="wrap_content"
-                        android:layout_width="match_parent"/>
+                        android:layout_width="match_parent" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view"
@@ -71,11 +79,10 @@
                             android:minLines="1"
                             android:paddingStart="16dp"
                             android:text="@string/connection_test_pending"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
                     </LinearLayout>
                 </LinearLayout>
-
 
                 <FrameLayout
                     android:id="@+id/fabProgressCircle"
@@ -113,7 +120,7 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
         app:itemIconTint="@color/colorAccent"
-        app:menu="@menu/menu_drawer" >
+        app:menu="@menu/menu_drawer">
 
     </com.google.android.material.navigation.NavigationView>
 

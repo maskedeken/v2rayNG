@@ -3,10 +3,11 @@ package com.v2ray.ang
 import android.content.Context
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
+import androidx.work.WorkManager
 import com.tencent.mmkv.MMKV
 import com.v2ray.ang.util.Utils
 
-class AngApplication : MultiDexApplication(), Configuration.Provider {
+class AngApplication : MultiDexApplication() {
     companion object {
         //const val PREF_LAST_VERSION = "pref_last_version"
         lateinit var application: AngApplication
@@ -17,8 +18,9 @@ class AngApplication : MultiDexApplication(), Configuration.Provider {
         application = this
     }
 
-    //var firstRun = false
-     //   private set
+    private val workManagerConfiguration: Configuration = Configuration.Builder()
+        .setDefaultProcessName("${BuildConfig.APPLICATION_ID}:bg")
+        .build()
 
     override fun onCreate() {
         super.onCreate()
@@ -34,11 +36,7 @@ class AngApplication : MultiDexApplication(), Configuration.Provider {
         MMKV.initialize(this)
 
         Utils.setNightMode(application)
-    }
-
-    override fun getWorkManagerConfiguration(): Configuration {
-        return Configuration.Builder()
-            .setDefaultProcessName("${BuildConfig.APPLICATION_ID}:bg")
-            .build()
+        // Initialize WorkManager with the custom configuration
+        WorkManager.initialize(this, workManagerConfiguration)
     }
 }

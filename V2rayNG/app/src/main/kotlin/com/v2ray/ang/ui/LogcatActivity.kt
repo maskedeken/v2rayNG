@@ -21,7 +21,9 @@ import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
 class LogcatActivity : BaseActivity() {
-    private lateinit var binding: ActivityLogcatBinding
+    private val binding by lazy {
+        ActivityLogcatBinding.inflate(layoutInflater)
+    }
 
     companion object {
         private const val MAX_BUFFERED_LINES = (1 shl 14) - 1
@@ -29,9 +31,7 @@ class LogcatActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLogcatBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        setContentView(binding.root)
 
         title = getString(R.string.title_logcat)
 
@@ -49,10 +49,12 @@ class LogcatActivity : BaseActivity() {
             toast(R.string.toast_success)
             true
         }
+
         R.id.clear_all -> {
             flush()
             true
         }
+
         else -> super.onOptionsItemSelected(item)
     }
 

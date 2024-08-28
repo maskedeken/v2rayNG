@@ -188,25 +188,25 @@ object V2rayConfigUtil {
 
             routingUserRule(
                 settingsStorage?.decodeString(AppConfig.PREF_V2RAY_ROUTING_BLOCKED)
-                    ?: "", TAG_BLOCKED, v2rayConfig
+                    .orEmpty(), TAG_BLOCKED, v2rayConfig
             )
             if (routingMode == ERoutingMode.GLOBAL_DIRECT.value) {
                 routingUserRule(
                     settingsStorage?.decodeString(AppConfig.PREF_V2RAY_ROUTING_DIRECT)
-                        ?: "", TAG_DIRECT, v2rayConfig
+                        .orEmpty(), TAG_DIRECT, v2rayConfig
                 )
                 routingUserRule(
                     settingsStorage?.decodeString(AppConfig.PREF_V2RAY_ROUTING_AGENT)
-                        ?: "", TAG_PROXY, v2rayConfig
+                        .orEmpty(), TAG_PROXY, v2rayConfig
                 )
             } else {
                 routingUserRule(
                     settingsStorage?.decodeString(AppConfig.PREF_V2RAY_ROUTING_AGENT)
-                        ?: "", TAG_PROXY, v2rayConfig
+                        .orEmpty(), TAG_PROXY, v2rayConfig
                 )
                 routingUserRule(
                     settingsStorage?.decodeString(AppConfig.PREF_V2RAY_ROUTING_DIRECT)
-                        ?: "", TAG_DIRECT, v2rayConfig
+                        .orEmpty(), TAG_DIRECT, v2rayConfig
                 )
             }
 
@@ -436,14 +436,14 @@ object V2rayConfigUtil {
 
     private fun dns(v2rayConfig: V2rayConfig): Boolean {
         try {
-            val hosts = mutableMapOf<String, String>()
+            val hosts = mutableMapOf<String, Any>()
             val servers = ArrayList<Any>()
 
             //remote Dns
             val remoteDns = Utils.getRemoteDnsServers()
             val proxyDomain = userRule2Domain(
                 settingsStorage?.decodeString(AppConfig.PREF_V2RAY_ROUTING_AGENT)
-                    ?: ""
+                    .orEmpty()
             )
             remoteDns.forEach {
                 servers.add(it)
@@ -456,7 +456,7 @@ object V2rayConfigUtil {
             val domesticDns = Utils.getDomesticDnsServers()
             val directDomain = userRule2Domain(
                 settingsStorage?.decodeString(AppConfig.PREF_V2RAY_ROUTING_DIRECT)
-                    ?: ""
+                    .orEmpty()
             )
             val routingMode = settingsStorage?.decodeString(AppConfig.PREF_ROUTING_MODE)
                 ?: ERoutingMode.BYPASS_LAN_MAINLAND.value
@@ -502,7 +502,7 @@ object V2rayConfigUtil {
             //block dns
             val blkDomain = userRule2Domain(
                 settingsStorage?.decodeString(AppConfig.PREF_V2RAY_ROUTING_BLOCKED)
-                    ?: ""
+                    .orEmpty()
             )
             if (blkDomain.size > 0) {
                 hosts.putAll(blkDomain.map { it to "127.0.0.1" })
@@ -510,6 +510,12 @@ object V2rayConfigUtil {
 
             // hardcode googleapi rule to fix play store problems
             hosts["domain:googleapis.cn"] = "googleapis.com"
+
+            // hardcode popular Android Private DNS rule to fix localhost DNS problem
+            hosts["dns.pub"] = arrayListOf("1.12.12.12", "120.53.53.53")
+            hosts["dns.alidns.com"] = arrayListOf("223.5.5.5", "223.6.6.6", "2400:3200::1", "2400:3200:baba::1")
+            hosts["one.one.one.one"] = arrayListOf("1.1.1.1", "1.0.0.1", "2606:4700:4700::1111", "2606:4700:4700::1001")
+            hosts["dns.google"] = arrayListOf("8.8.8.8", "8.8.4.4", "2001:4860:4860::8888", "2001:4860:4860::8844")
 
             // DNS dns对象
             v2rayConfig.dns = V2rayConfig.DnsBean(
