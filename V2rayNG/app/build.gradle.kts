@@ -14,8 +14,8 @@ android {
         applicationId = "com.v2ray.ang"
         minSdk = 21
         targetSdk = 34
-        versionCode = 583
-        versionName = "1.8.38"
+        versionCode = 585
+        versionName = "1.8.39"
         multiDexEnabled = true
         splits {
             abi {
@@ -40,6 +40,7 @@ android {
             keyAlias = getProps("ALIAS_NAME")
             keyPassword = getProps("ALIAS_PASS")
         }
+
     }
 
     compileOptions {

@@ -24,6 +24,7 @@ import com.v2ray.ang.dto.ERoutingMode
 import com.v2ray.ang.util.MmkvManager
 import com.v2ray.ang.util.MyContextWrapper
 import com.v2ray.ang.util.Utils
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.runBlocking

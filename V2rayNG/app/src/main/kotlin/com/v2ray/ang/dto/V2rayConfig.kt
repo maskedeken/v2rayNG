@@ -85,6 +85,7 @@ data class V2rayConfig(
         data class OutSettingsBean(
             var vnext: List<VnextBean>? = null,
             var fragment: FragmentBean? = null,
+            var noise: NoiseBean? = null,
             var servers: List<ServersBean>? = null,
             /*Blackhole*/
             var response: Response? = null,
@@ -126,6 +127,11 @@ data class V2rayConfig(
                 var packets: String? = null,
                 var length: String? = null,
                 var interval: String? = null
+            )
+
+            data class NoiseBean(
+                var packet: String? = null,
+                var delay: String? = null
             )
 
             data class ServersBean(
