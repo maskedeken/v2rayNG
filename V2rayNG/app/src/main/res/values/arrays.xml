@@ -27,7 +27,6 @@
         <item>ws</item>
         <item>httpupgrade</item>
         <item>xhttp</item>
-        <item>splithttp</item>
         <item>h2</item>
         <item>grpc</item>
     </string-array>
@@ -227,5 +226,6 @@
         <item>auto</item>
         <item>packet-up</item>
         <item>stream-up</item>
+        <item>stream-one</item>
     </string-array>
 </resources>

@@ -406,7 +406,7 @@ data class V2rayConfig(
                         httpupgradeSettings = httpupgradeSetting
                     }
 
-                    NetworkType.SPLIT_HTTP.type, NetworkType.XHTTP.type -> {
+                    NetworkType.XHTTP.type -> {
                         val xhttpSetting = XhttpSettingsBean()
                         xhttpSetting.host = host.orEmpty()
                         sni = host
@@ -598,7 +598,7 @@ data class V2rayConfig(
                         )
                     }
 
-                    NetworkType.SPLIT_HTTP.type, NetworkType.XHTTP.type -> {
+                    NetworkType.XHTTP.type -> {
                         val xhttpSettings = streamSettings?.xhttpSettings ?: return null
                         listOf(
                             "",

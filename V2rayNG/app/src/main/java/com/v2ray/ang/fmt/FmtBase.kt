@@ -1,5 +1,6 @@
 package com.v2ray.ang.fmt
 
+import com.v2ray.ang.AppConfig
 import com.v2ray.ang.dto.NetworkType
 import com.v2ray.ang.dto.ProfileItem
 import com.v2ray.ang.extension.isNotNullEmpty
@@ -31,8 +32,6 @@ open class FmtBase {
 
     fun getItemFormQuery(config: ProfileItem, queryParam: Map<String, String>, allowInsecure: Boolean) {
         config.network = queryParam["type"] ?: NetworkType.TCP.type
-        //TODO
-        if (config.network == NetworkType.SPLIT_HTTP.type) config.network = NetworkType.XHTTP.type
         config.headerType = queryParam["headerType"]
         config.host = queryParam["host"]
         config.path = queryParam["path"]
@@ -47,6 +46,9 @@ open class FmtBase {
         config.xhttpExtra = queryParam["extra"]
 
         config.security = queryParam["security"]
+        if (config.security != AppConfig.TLS && config.security != AppConfig.REALITY) {
+            config.security = null
+        }
         config.insecure = if (queryParam["allowInsecure"].isNullOrEmpty()) {
             allowInsecure
         } else {
@@ -91,7 +93,7 @@ open class FmtBase {
                 config.path.let { if (it.isNotNullEmpty()) dicQuery["path"] = it.orEmpty() }
             }
 
-            NetworkType.SPLIT_HTTP, NetworkType.XHTTP -> {
+             NetworkType.XHTTP -> {
                 config.host.let { if (it.isNotNullEmpty()) dicQuery["host"] = it.orEmpty() }
                 config.path.let { if (it.isNotNullEmpty()) dicQuery["path"] = it.orEmpty() }
                 config.xhttpMode.let { if (it.isNotNullEmpty()) dicQuery["mode"] = it.orEmpty() }
