@@ -173,7 +173,7 @@ object AngConfigManager {
                 val config = MmkvManager.decodeServerConfig(guid)
                 if (config?.configType == EConfigType.HYSTERIA2) {
                     val socksPort = Utils.findFreePort(listOf(100 + SettingsManager.getSocksPort(), 0))
-                    val hy2Config = Hysteria2Fmt.toNativeConfig(config, socksPort)
+                    val hy2Config = Hysteria2Fmt.toNativeConfig(config, socksPort, result.finalPort)
                     Utils.setClipboard(context, JsonUtil.toJsonPretty(hy2Config) + "\n" + result.content)
                     return 0
                 }

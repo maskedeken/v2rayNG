@@ -127,8 +127,8 @@ class ServerActivity : BaseActivity() {
     private val et_local_address: EditText? by lazy { findViewById(R.id.et_local_address) }
     private val et_local_mtu: EditText? by lazy { findViewById(R.id.et_local_mtu) }
     private val et_obfs_password: EditText? by lazy { findViewById(R.id.et_obfs_password) }
-    private val et_port_hop: EditText? by lazy { findViewById(R.id.et_port_hop) }
-    private val et_port_hop_interval: EditText? by lazy { findViewById(R.id.et_port_hop_interval) }
+//    private val et_port_hop: EditText? by lazy { findViewById(R.id.et_port_hop) }
+//    private val et_port_hop_interval: EditText? by lazy { findViewById(R.id.et_port_hop_interval) }
     private val et_pinsha256: EditText? by lazy { findViewById(R.id.et_pinsha256) }
     private val et_extra: EditText? by lazy { findViewById(R.id.et_extra) }
     private val layout_extra: LinearLayout? by lazy { findViewById(R.id.layout_extra) }
@@ -340,8 +340,8 @@ class ServerActivity : BaseActivity() {
             et_local_mtu?.text = Utils.getEditable(config.mtu?.toString() ?: WIREGUARD_LOCAL_MTU)
         } else if (config.configType == EConfigType.HYSTERIA2) {
             et_obfs_password?.text = Utils.getEditable(config.obfsPassword)
-            et_port_hop?.text = Utils.getEditable(config.portHopping)
-            et_port_hop_interval?.text = Utils.getEditable(config.portHoppingInterval)
+//            et_port_hop?.text = Utils.getEditable(config.portHopping)
+//            et_port_hop_interval?.text = Utils.getEditable(config.portHoppingInterval)
             et_pinsha256?.text = Utils.getEditable(config.pinSHA256)
         }
         val securityEncryptions =
@@ -521,8 +521,8 @@ class ServerActivity : BaseActivity() {
             config.mtu = Utils.parseInt(et_local_mtu?.text.toString())
         } else if (config.configType == EConfigType.HYSTERIA2) {
             config.obfsPassword = et_obfs_password?.text?.toString()
-            config.portHopping = et_port_hop?.text?.toString()
-            config.portHoppingInterval = et_port_hop_interval?.text?.toString()
+//            config.portHopping = et_port_hop?.text?.toString()
+//            config.portHoppingInterval = et_port_hop_interval?.text?.toString()
             config.pinSHA256 = et_pinsha256?.text?.toString()
         }
     }
