@@ -26,9 +26,9 @@
         <item>kcp</item>
         <item>ws</item>
         <item>httpupgrade</item>
+        <item>xhttp</item>
         <item>splithttp</item>
         <item>h2</item>
-        <item>quic</item>
         <item>grpc</item>
     </string-array>
 
@@ -97,14 +97,6 @@
         <item></item>
         <item>true</item>
         <item>false</item>
-    </string-array>
-
-    <string-array name="routing_mode_value" translatable="false">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
     </string-array>
 
     <string-array name="routing_domain_strategy" translatable="false">
@@ -179,6 +171,7 @@
         <item>فارسی</item>
         <item>عربي</item>
         <item>বাংলা</item>
+        <item>لۊری بختیاری</item>
     </string-array>
 
 
@@ -192,6 +185,7 @@
         <item>fa</item>
         <item>ar</item>
         <item>bn</item>
+        <item>bqi-rIR</item>
     </string-array>
 
     <string-array name="reduced_iv_head_entropy" translatable="false">
@@ -221,5 +215,17 @@
         <item>0</item>
         <item>1</item>
         <item>2</item>
+    </string-array>
+
+    <string-array name="outbound_tag" translatable="false">
+        <item>proxy</item>
+        <item>direct</item>
+        <item>block</item>
+    </string-array>
+
+    <string-array name="xhttp_mode" translatable="false">
+        <item>auto</item>
+        <item>packet-up</item>
+        <item>stream-up</item>
     </string-array>
 </resources>

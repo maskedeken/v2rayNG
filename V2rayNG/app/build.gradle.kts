@@ -2,21 +2,23 @@ import java.util.Properties
 import java.util.Base64
 
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    id("com.google.android.gms.oss-licenses-plugin")
 }
 
 android {
     namespace = "com.v2ray.ang"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.v2ray.ang"
         minSdk = 21
-        targetSdk = 34
-        versionCode = 585
-        versionName = "1.8.39"
+        targetSdk = 35
+        versionCode = 618
+        versionName = "1.9.22"
         multiDexEnabled = true
+
         splits {
             abi {
                 isEnable = true
@@ -31,6 +33,7 @@ android {
             }
         }
 
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -40,21 +43,16 @@ android {
             keyAlias = getProps("ALIAS_NAME")
             keyPassword = getProps("ALIAS_PASS")
         }
-
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
     buildTypes {
         release {
             isMinifyEnabled = false
             signingConfig = signingConfigs.findByName("release")
-        }
-        debug {
-            isMinifyEnabled = false
-
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -64,8 +62,12 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
     applicationVariants.all {
@@ -83,7 +85,8 @@ android {
 
                 output.outputFileName = "v2rayNG_${variant.versionName}_${abi}.apk"
                 if (versionCodes.containsKey(abi)) {
-                    output.versionCodeOverride = (1000000 * versionCodes[abi]!!).plus(variant.versionCode)
+                    output.versionCodeOverride =
+                        (1000000 * versionCodes[abi]!!).plus(variant.versionCode)
                 } else {
                     return@forEach
                 }
@@ -100,49 +103,64 @@ android {
             useLegacyPackaging = true
         }
     }
+
 }
 
 dependencies {
+    // Core Libraries
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar", "*.jar"))))
-    testImplementation(libs.junit)
 
-    implementation(libs.flexbox)
-    // Androidx
-    implementation(libs.constraintlayout)
-    implementation(libs.legacy.support.v4)
-    implementation(libs.appcompat)
-    implementation(libs.material)
-    implementation(libs.cardview)
+    // AndroidX Core Libraries
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
     implementation(libs.preference.ktx)
     implementation(libs.recyclerview)
-    implementation(libs.fragment.ktx)
-    implementation(libs.multidex)
-    implementation(libs.viewpager2)
 
-    // Androidx ktx
-    implementation(libs.activity.ktx)
+    // UI Libraries
+    implementation(libs.material)
+    implementation(libs.toastcompat)
+    implementation(libs.editorkit)
+    implementation(libs.flexbox)
+
+    // Data and Storage Libraries
+    implementation(libs.mmkv.static)
+    implementation(libs.gson)
+
+    // Reactive and Utility Libraries
+    implementation(libs.rxjava)
+    implementation(libs.rxandroid)
+    implementation(libs.rxpermissions)
+
+    // Language and Processing Libraries
+    implementation(libs.language.base)
+    implementation(libs.language.json)
+
+    // Intent and Utility Libraries
+    implementation(libs.quickie.bundled)
+    implementation(libs.core)
+
+    // AndroidX Lifecycle and Architecture Components
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.runtime.ktx)
 
-    //kotlin
-    implementation(libs.kotlin.reflect)
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
-
-    implementation(libs.mmkv.static)
-    implementation(libs.gson)
-    implementation(libs.rxjava)
-    implementation(libs.rxandroid)
-    implementation(libs.rxpermissions)
-    implementation(libs.toastcompat)
-    implementation(libs.editorkit)
-    implementation(libs.language.base)
-    implementation(libs.language.json)
-    implementation(libs.quickie.bundled)
-    implementation(libs.core)
+    // Background Task Libraries
     implementation(libs.work.runtime.ktx)
     implementation(libs.work.multiprocess)
+
+    // Multidex Support
+    implementation(libs.multidex)
+
+    // Testing Libraries
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.org.mockito.mockito.inline)
+    testImplementation(libs.mockito.kotlin)
+    // Oss Licenses
+    implementation(libs.play.services.oss.licenses)
 }
 
 private lateinit var localProperties: Properties

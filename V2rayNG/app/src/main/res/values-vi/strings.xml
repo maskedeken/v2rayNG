@@ -11,6 +11,7 @@
     <!-- Notifications -->
     <string name="notification_action_stop_v2ray">Ngắt kết nối v2rayNG</string>
     <string name="toast_permission_denied">Vui lòng cấp quyền cần thiết cho v2rayNG! Bạn đã từ chối các quyền cần thiết như Camera hay Bộ nhớ?</string>
+    <string name="toast_permission_denied_notification">Unable to obtain the notification permission</string>
     <string name="notification_action_more">Nhấn để biết thêm...</string>
     <string name="toast_services_start">Đang khởi động v2rayNG...</string>
     <string name="toast_services_stop">Đã dừng v2rayNG!</string>
@@ -24,12 +25,14 @@
     <string name="menu_item_del_config">Xoá cấu hình</string>
     <string name="menu_item_import_config_qrcode">Nhập cấu hình từ mã QR</string>
     <string name="menu_item_import_config_clipboard">Nhập cấu hình từ Clipboard</string>
-    <string name="menu_item_import_config_manually_vmess">Nhập thủ công [VMESS]</string>
+    <string name="menu_item_import_config_manually_vmess">Nhập thủ công [VMess]</string>
     <string name="menu_item_import_config_manually_vless">Nhập thủ công [VLESS]</string>
     <string name="menu_item_import_config_manually_ss">Nhập thủ công [ShadowSocks]</string>
-    <string name="menu_item_import_config_manually_socks">Nhập thủ công [Socks]</string>
+    <string name="menu_item_import_config_manually_socks">Nhập thủ công [SOCKS]</string>
+    <string name="menu_item_import_config_manually_http">Type manually[HTTP]</string>
     <string name="menu_item_import_config_manually_trojan">Nhập thủ công [Trojan]</string>
     <string name="menu_item_import_config_manually_wireguard">Nhập thủ công [WireGuard]</string>
+    <string name="menu_item_import_config_manually_hysteria2">Type manually[Hysteria2]</string>
     <string name="menu_item_import_config_custom">Nâng cao / Cấu hình tùy chỉnh</string>
     <string name="menu_item_import_config_custom_clipboard">Nhập cấu hình tùy chỉnh từ Clipboard</string>
     <string name="menu_item_import_config_custom_local">Nhập cấu hình tùy chỉnh từ Tệp</string>
@@ -51,14 +54,14 @@
     <string name="server_lab_request_host_http">http host</string>
     <string name="server_lab_request_host_ws">ws host</string>
     <string name="server_lab_request_host_httpupgrade">httpupgrade host</string>
-    <string name="server_lab_request_host_splithttp">splithttp host</string>
+    <string name="server_lab_request_host_xhttp">xhttp host</string>
     <string name="server_lab_request_host_h2">h2 host</string>
     <string name="server_lab_request_host_quic">QUIC security</string>
     <string name="server_lab_request_host_grpc">gRPC Authority</string>
     <string name="server_lab_path">path</string>
     <string name="server_lab_path_ws">ws path</string>
     <string name="server_lab_path_httpupgrade">httpupgrade path</string>
-    <string name="server_lab_path_splithttp">splithttp path</string>
+    <string name="server_lab_path_xhttp">xhttp path </string>
     <string name="server_lab_path_h2">h2 path</string>
     <string name="server_lab_path_quic">QUIC key</string>
     <string name="server_lab_path_kcp">kcp seed</string>
@@ -95,14 +98,22 @@
     <string name="server_lab_content">Nội dung</string>
     <string name="toast_none_data_clipboard">Không có dữ liệu nào trong Clipboard!</string>
     <string name="toast_invalid_url">URL không hợp lệ hoặc trống!</string>
+    <string name="toast_insecure_url_protocol">Please do not use the insecure HTTP protocol subscription address</string>
     <string name="server_lab_need_inbound">Vui lòng đảm bảo cấu hình tùy chỉnh này không bị lỗi trước khi sử dụng!</string>
     <string name="toast_malformed_josn">Cấu hình không hợp lệ!</string>
     <string name="server_lab_request_host6">Host (SNI) (Không bắt buộc)</string>
     <string name="toast_asset_copy_failed">Không thể sao chép tệp tin, hãy dùng trình quản lý tệp!</string>
     <string name="menu_item_add_file">Thêm tệp</string>
+    <string name="menu_item_scan_qrcode">Quét mã QR</string>
     <string name="title_url">URL</string>
     <string name="menu_item_download_file">Tải xuống tệp tin</string>
     <string name="toast_action_not_allowed">Hành động này bị cấm!</string>
+    <string name="server_obfs_password">Obfs password</string>
+    <string name="server_lab_port_hop">Port Hopping</string>
+    <string name="server_lab_port_hop_interval">Port Hopping Interval</string>
+    <string name="server_lab_stream_pinsha256">pinSHA256</string>
+    <string name="server_lab_xhttp_mode">XHTTP Mode</string>
+    <string name="server_lab_xhttp_extra">XHTTP Extra raw JSON, format: { XHTTPObject }</string>
 
     <!-- PerAppProxyActivity -->
     <string name="title_user_asset_add_url">Thêm URL nội dung</string>
@@ -125,6 +136,8 @@
     <string name="title_vpn_settings">Cài đặt VPN</string>
     <string name="title_pref_per_app_proxy">Proxy theo Ứng dụng</string>
     <string name="summary_pref_per_app_proxy">- Bình thường: Ứng dụng đã chọn sẽ kết nối thông qua Proxy, chưa chọn sẽ kết nối trực tiếp. \n- Chế độ Bypass: Ứng dụng đã chọn sẽ kết nối trực tiếp, chưa chọn sẽ kết nối qua Proxy. \n- Nếu bạn đang ở Trung Quốc thì vào Menu, chọn Tự động chọn ứng dụng Proxy.</string>
+    <string name="title_pref_is_booted">Auto connect at startup</string>
+    <string name="summary_pref_is_booted">Automatically connects to the selected server at startup, which may be unsuccessful</string>
 
     <string name="title_mux_settings">Cài đặt Mux</string>
     <string name="title_pref_mux_enabled">Bật Mux</string>
@@ -156,11 +169,6 @@
 
     <string name="title_pref_prefer_ipv6">Ưu tiên IPv6</string>
     <string name="summary_pref_prefer_ipv6">Ưu tiên sử dụng địa chỉ IPv6 cho kết nối và định tuyến.</string>
-
-    <string name="title_pref_routing">Định tuyến</string>
-    <string name="title_pref_routing_domain_strategy">Chiến lược tên miền (DomainStrategy)</string>
-    <string name="title_pref_routing_mode">Quy tắc được định nghĩa trước</string>
-    <string name="title_pref_routing_custom">Quy tắc tùy chỉnh</string>
 
     <string name="title_pref_remote_dns">DNS ngoại quốc (UDP / TCP / HTTPS / QUIC) (Không bắt buộc)</string>
     <string name="summary_pref_remote_dns">DNS</string>
@@ -194,6 +202,9 @@
 
     <string name="title_pref_start_scan_immediate">Quét mã QR ngay lập tức</string>
     <string name="summary_pref_start_scan_immediate">Mở camera để quét mã QR ngay khi khởi động, nếu không, bạn cũng có thể chọn quét mã hoặc chọn ảnh từ thanh công cụ.</string>
+
+    <string name="title_pref_append_http_proxy">Append HTTP Proxy to VPN</string>
+    <string name="summary_pref_append_http_proxy">HTTP proxy will be used directly from (browser/ some supported apps), without going through the virtual NIC device (Android 10+)</string>
 
     <string name="title_pref_feedback">Phản hồi lỗi</string>
     <string name="summary_pref_feedback">Phản hồi cải tiến hoặc lỗi lên GitHub</string>
@@ -233,8 +244,12 @@
     <string name="title_sub_setting">Các gói đăng ký</string>
     <string name="sub_setting_remarks">Tên gói đăng ký</string>
     <string name="sub_setting_url">URL gói đăng ký</string>
+    <string name="sub_setting_filter">Remarks regular filter</string>
     <string name="sub_setting_enable">Sử dụng gói đăng ký này</string>
     <string name="sub_auto_update">Bật tự động cập nhật</string>
+    <string name="sub_setting_pre_profile">Previous proxy remarks</string>
+    <string name="sub_setting_next_profile">Next proxy remarks</string>
+    <string name="sub_setting_pre_profile_tip">The remarks exists and is unique</string>
     <string name="title_sub_update">Cập nhật các gói đăng ký</string>
     <string name="title_ping_all_server">Ping tất cả máy chủ</string>
     <string name="title_real_ping_all_server">Kiểm tra HTTP tất cả máy chủ</string>
@@ -247,13 +262,19 @@
     <string name="tasker_start_service">Khởi động v2rayNG</string>
     <string name="tasker_setting_confirm">Xác nhận</string>
 
+    <string name="routing_settings_domain_strategy">Chiến lược tên miền (DomainStrategy)</string>
     <string name="routing_settings_title">Cài đặt định tuyến</string>
     <string name="routing_settings_tips">Phân cách bằng dấu phẩy (,). Có thể tải xuống Rules mặc định để tham khảo ở menu ba chấm.</string>
     <string name="routing_settings_save">Lưu lại</string>
     <string name="routing_settings_delete">Xoá</string>
-    <string name="routing_settings_scan_replace">Quét QR và Thay thế</string>
-    <string name="routing_settings_scan_append">Quét QR và Nối thêm</string>
-    <string name="routing_settings_default_rules">Tải xuống Rules mặc định cho Trung Quốc</string>
+    <string name="routing_settings_rule_title">Routing Rule Settings</string>
+    <string name="routing_settings_add_rule">Add rule</string>
+    <string name="routing_settings_import_predefined_rulesets">Nhập các bộ quy tắc được xác định trước</string>
+    <string name="routing_settings_import_rulesets_tip">Existing rulesets will be deleted, are you sure to continue?</string>
+    <string name="routing_settings_import_rulesets_from_clipboard">Import ruleset from clipboard</string>
+    <string name="routing_settings_import_rulesets_from_qrcode">Nhập bộ quy tắc từ QRcode</string>
+    <string name="routing_settings_export_rulesets_to_clipboard">Export ruleset to clipboard</string>
+    <string name="routing_settings_locked">Locked, keep this rule when import presets</string>
 
     <string name="connection_test_pending">Kiểm tra kết nối</string>
     <string name="connection_test_testing">Đang kiểm tra kết nối mạng...</string>
@@ -276,20 +297,6 @@
     <string-array name="share_sub_method">
         <item>Xuất gói ra mã QR (Chụp màn hình để lưu)</item>
         <item>Xuất gói vào Clipboard</item>
-    </string-array>
-
-    <string-array name="routing_tag">
-        <item>Proxy</item>
-        <item>Direct</item>
-        <item>Blocked</item>
-    </string-array>
-
-    <string-array name="routing_mode">
-        <item>Proxy toàn cầu</item>
-        <item>Bỏ qua địa chỉ LAN rồi Proxy</item>
-        <item>Bỏ qua địa chỉ nội địa rồi Proxy</item>
-        <item>Bỏ qua LAN và địa chỉ nội địa rồi Proxy</item>
-        <item>Kết nối trực tiếp toàn cầu</item>
     </string-array>
 
     <string-array name="mode_entries">

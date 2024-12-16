@@ -12,6 +12,7 @@
     <!-- Notifications -->
     <string name="notification_action_stop_v2ray">বন্ধ করুন</string>
     <string name="toast_permission_denied">অনুমতি পাওয়া যাচ্ছে না</string>
+    <string name="toast_permission_denied_notification">Unable to obtain the notification permission</string>
     <string name="notification_action_more">আরও দেখতে ক্লিক করুন</string>
     <string name="toast_services_start">সার্ভিস শুরু করুন</string>
     <string name="toast_services_stop">সার্ভিস বন্ধ করুন</string>
@@ -25,12 +26,14 @@
     <string name="menu_item_del_config">কনফিগারেশন মুছুন</string>
     <string name="menu_item_import_config_qrcode">QR কোড থেকে কনফিগারেশন আমদানি করুন</string>
     <string name="menu_item_import_config_clipboard">ক্লিপবোর্ড থেকে কনফিগারেশন আমদানি করুন</string>
-    <string name="menu_item_import_config_manually_vmess">ম্যানুয়ালি টাইপ করুন [Vmess]</string>
+    <string name="menu_item_import_config_manually_vmess">ম্যানুয়ালি টাইপ করুন [VMess]</string>
     <string name="menu_item_import_config_manually_vless">ম্যানুয়ালি টাইপ করুন [VLESS]</string>
     <string name="menu_item_import_config_manually_ss">ম্যানুয়ালি টাইপ করুন [Shadowsocks]</string>
-    <string name="menu_item_import_config_manually_socks">ম্যানুয়ালি টাইপ করুন [Socks]</string>
+    <string name="menu_item_import_config_manually_socks">ম্যানুয়ালি টাইপ করুন [SOCKS]</string>
+    <string name="menu_item_import_config_manually_http">Type manually[HTTP]</string>
     <string name="menu_item_import_config_manually_trojan">ম্যানুয়ালি টাইপ করুন [Trojan]</string>
     <string name="menu_item_import_config_manually_wireguard">ম্যানুয়ালি টাইপ করুন [Wireguard]</string>
+    <string name="menu_item_import_config_manually_hysteria2">Type manually[Hysteria2]</string>
     <string name="menu_item_import_config_custom">কাস্টম কনফিগারেশন</string>
     <string name="menu_item_import_config_custom_clipboard">ক্লিপবোর্ড থেকে কাস্টম কনফিগারেশন আমদানি করুন</string>
     <string name="menu_item_import_config_custom_local">স্থানীয়ভাবে কাস্টম কনফিগারেশন আমদানি করুন</string>
@@ -52,14 +55,14 @@
     <string name="server_lab_request_host_http">http হোস্ট</string>
     <string name="server_lab_request_host_ws">ws হোস্ট</string>
     <string name="server_lab_request_host_httpupgrade">httpupgrade হোস্ট</string>
-    <string name="server_lab_request_host_splithttp">splithttp হোস্ট</string>
+    <string name="server_lab_request_host_xhttp">xhttp হোস্ট</string>
     <string name="server_lab_request_host_h2">h2 হোস্ট</string>
     <string name="server_lab_request_host_quic">QUIC নিরাপত্তা</string>
     <string name="server_lab_request_host_grpc">gRPC কর্তৃপক্ষ</string>
     <string name="server_lab_path">পথ</string>
     <string name="server_lab_path_ws">ws পথ</string>
     <string name="server_lab_path_httpupgrade">httpupgrade পথ</string>
-    <string name="server_lab_path_splithttp">splithttp পথ</string>
+    <string name="server_lab_path_xhttp">xhttp পথ</string>
     <string name="server_lab_path_h2">h2 পথ</string>
     <string name="server_lab_path_quic">QUIC কী</string>
     <string name="server_lab_path_kcp">kcp বীজ</string>
@@ -96,6 +99,7 @@
     <string name="server_lab_content">কনটেন্ট</string>
     <string name="toast_none_data_clipboard">ক্লিপবোর্ডে কোনও তথ্য নেই</string>
     <string name="toast_invalid_url">অবৈধ URL</string>
+    <string name="toast_insecure_url_protocol">Please do not use the insecure HTTP protocol subscription address</string>
     <string name="server_lab_need_inbound">ইনবাউন্ড পোর্ট নিশ্চিত করুন সেটিংসের সাথে সামঞ্জস্যপূর্ণ</string>
     <string name="toast_malformed_josn">কনফিগারেশন বিকৃত</string>
     <string name="server_lab_request_host6">হোস্ট (SNI) (ঐচ্ছিক)</string>
@@ -103,12 +107,20 @@
     <string name="menu_item_add_asset">অ্যাসেট যোগ করুন</string>
     <string name="menu_item_add_file">ফাইল যোগ করুন</string>
     <string name="menu_item_add_url">URL যোগ করুন</string>
+    <string name="menu_item_scan_qrcode">QR কোড স্ক্যান করুন</string>
     <string name="title_url" translatable="false">URL</string>
     <string name="menu_item_download_file">ফাইল ডাউনলোড করুন</string>
     <string name="title_user_asset_add_url">অ্যাসেট URL যোগ করুন</string>
     <string name="msg_file_not_found">ফাইল খুঁজে পাওয়া যায়নি</string>
     <string name="msg_remark_is_duplicate">মন্তব্য ইতিমধ্যে বিদ্যমান</string>
     <string name="toast_action_not_allowed">অ্যাকশন অনুমোদিত নয়</string>
+    <string name="server_obfs_password">Obfs password</string>
+    <string name="server_lab_port_hop">Port Hopping</string>
+    <string name="server_lab_port_hop_interval">Port Hopping Interval</string>
+    <string name="server_lab_stream_pinsha256">pinSHA256</string>
+    <string name="server_lab_xhttp_mode">XHTTP Mode</string>
+    <string name="server_lab_xhttp_extra">XHTTP Extra raw JSON, format: { XHTTPObject }</string>
+
     <!-- PerAppProxyActivity -->
     <string name="msg_dialog_progress">লোড হচ্ছে</string>
     <string name="menu_item_search">অনুসন্ধান করুন</string>
@@ -126,6 +138,8 @@
     <string name="title_vpn_settings">VPN সেটিংস</string>
     <string name="title_pref_per_app_proxy">প্রতি-অ্যাপ প্রক্সি</string>
     <string name="summary_pref_per_app_proxy">সাধারণ: চেকড অ্যাপ প্রক্সি, আনচেকড সরাসরি সংযোগ; \nবাইপাস মোড: চেকড অ্যাপ সরাসরি সংযুক্ত, আনচেকড প্রক্সি। \nমেনুতে প্রক্সি অ্যাপ্লিকেশন স্বয়ংক্রিয়ভাবে নির্বাচন করার বিকল্প</string>
+    <string name="title_pref_is_booted">Auto connect at startup</string>
+    <string name="summary_pref_is_booted">Automatically connects to the selected server at startup, which may be unsuccessful</string>
 
     <string name="title_mux_settings">Mux সেটিংস</string>
     <string name="title_pref_mux_enabled">Mux সক্রিয় করুন</string>
@@ -156,11 +170,6 @@
 
     <string name="title_pref_prefer_ipv6">IPv6 অগ্রাধিকার দিন</string>
     <string name="summary_pref_prefer_ipv6">IPv6 ঠিকানা এবং রুটকে অগ্রাধিকার দিন</string>
-
-    <string name="title_pref_routing">রাউটিং</string>
-    <string name="title_pref_routing_domain_strategy">ডোমেইন কৌশল</string>
-    <string name="title_pref_routing_mode">পূর্বনির্ধারিত নিয়ম</string>
-    <string name="title_pref_routing_custom">কাস্টম নিয়ম</string>
 
     <string name="title_pref_remote_dns">রিমোট DNS (udp/tcp/https/quic)(ঐচ্ছিক)</string>
     <string name="summary_pref_remote_dns">DNS</string>
@@ -194,6 +203,10 @@
 
     <string name="title_pref_start_scan_immediate">তাত্ক্ষণিক স্ক্যান শুরু করুন</string>
     <string name="summary_pref_start_scan_immediate">শুরুতে তাত্ক্ষণিকভাবে স্ক্যান করতে ক্যামেরা খুলুন, অন্যথায় আপনি কোড স্ক্যান বা টুলবারে একটি ছবি নির্বাচন করতে পারেন</string>
+
+    <string name="title_pref_append_http_proxy">Append HTTP Proxy to VPN</string>
+    <string name="summary_pref_append_http_proxy">HTTP proxy will be used directly from (browser/ some supported apps), without going through the virtual NIC device (Android 10+)</string>
+
     <string name="title_pref_feedback">মতামত</string>
     <string name="summary_pref_feedback">মতামত উন্নয়ন বা বাগগুলি GitHub-এ পাঠান</string>
     <string name="summary_pref_tg_group">টেলিগ্রাম গ্রুপে যোগদান করুন</string>
@@ -232,8 +245,12 @@
     <string name="title_sub_setting">সাবস্ক্রিপশন গ্রুপ সেটিং</string>
     <string name="sub_setting_remarks">মন্তব্য</string>
     <string name="sub_setting_url">ঐচ্ছিক URL</string>
+    <string name="sub_setting_filter">Remarks regular filter</string>
     <string name="sub_setting_enable">আপডেট সক্রিয় করুন</string>
     <string name="sub_auto_update">স্বয়ংক্রিয় আপডেট সক্রিয় করুন</string>
+    <string name="sub_setting_pre_profile">Previous proxy remarks</string>
+    <string name="sub_setting_next_profile">Next proxy remarks</string>
+    <string name="sub_setting_pre_profile_tip">The remarks exists and is unique</string>
     <string name="title_sub_update">সাবস্ক্রিপশন আপডেট</string>
     <string name="title_ping_all_server">সব কনফিগারেশন TCPing</string>
     <string name="title_real_ping_all_server">সব কনফিগারেশন প্রকৃত বিলম্ব</string>
@@ -245,13 +262,19 @@
     <string name="tasker_start_service">সার্ভিস শুরু করুন</string>
     <string name="tasker_setting_confirm">নিশ্চিত করুন</string>
 
+    <string name="routing_settings_domain_strategy">ডোমেইন কৌশল</string>
     <string name="routing_settings_title">রাউটিং সেটিংস</string>
     <string name="routing_settings_tips">কমা (,) দ্বারা আলাদা করুন, মনে রাখবেন সেভ করতে</string>
     <string name="routing_settings_save">সেভ করুন</string>
     <string name="routing_settings_delete">মুছে ফেলুন</string>
-    <string name="routing_settings_scan_replace">স্ক্যান করুন এবং প্রতিস্থাপন করুন</string>
-    <string name="routing_settings_scan_append">স্ক্যান করুন এবং যোগ করুন</string>
-    <string name="routing_settings_default_rules"> ডিফল্ট রাউটিং নিয়ম সেট করুন</string>
+    <string name="routing_settings_rule_title">Routing Rule Settings</string>
+    <string name="routing_settings_add_rule">Add rule</string>
+    <string name="routing_settings_import_predefined_rulesets">পূর্বনির্ধারিত নিয়মাবলী আমদানি করুন</string>
+    <string name="routing_settings_import_rulesets_tip">Existing rulesets will be deleted, are you sure to continue?</string>
+    <string name="routing_settings_import_rulesets_from_clipboard">Import ruleset from clipboard</string>
+    <string name="routing_settings_import_rulesets_from_qrcode">QRcode থেকে রুলসেট আমদানি করুন</string>
+    <string name="routing_settings_export_rulesets_to_clipboard">Export ruleset to clipboard</string>
+    <string name="routing_settings_locked">Locked, keep this rule when import presets</string>
 
     <string name="connection_test_pending">সংযোগ পরীক্ষা করুন</string>
     <string name="connection_test_testing">পরীক্ষা চলছে…</string>
@@ -280,20 +303,6 @@
         <item>ক্লিপবোর্ডে রপ্তানি করুন</item>
     </string-array>
 
-    <string-array name="routing_tag">
-        <item>প্রক্সি URL বা IP</item>
-        <item>ডাইরেক্ট URL বা IP</item>
-        <item>ব্লকড URL বা IP</item>
-    </string-array>
-
-    <string-array name="routing_mode">
-        <item>গ্লোবাল প্রোক্সি</item>
-        <item>LAN ঠিকানা বাইপাস করে তারপর প্রোক্সি</item>
-        <item>মেইনল্যান্ড ঠিকানা বাইপাস করে তারপর প্রোক্সি</item>
-        <item>LAN এবং মেইনল্যান্ড ঠিকানা বাইপাস করে তারপর প্রোক্সি</item>
-        <item>গ্লোবাল ডাইরেক্ট</item>
-    </string-array>
-
     <string-array name="mode_entries">
         <item>VPN</item>
         <item>শুধুমাত্র প্রোক্সি</item>
@@ -304,4 +313,12 @@
         <item>লাইট</item>
         <item>ডার্ক</item>
     </string-array>
+    <string-array name="preset_rulesets">
+        <item>চায়না হোয়াইটলিস্ট</item>
+        <item>চায়না ব্ল্যাকলিস্ট</item>
+        <item>গ্লোবাল</item>
+        <item>ইরান হোয়াইটলিস্ট</item>
+    </string-array>
+
+
 </resources>
